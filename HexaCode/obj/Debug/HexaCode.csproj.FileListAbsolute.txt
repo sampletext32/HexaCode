@@ -1,0 +1,10 @@
+D:\Projects\C#\HexaCode\HexaCode\bin\Debug\HexaCode.exe.config
+D:\Projects\C#\HexaCode\HexaCode\bin\Debug\HexaCode.exe
+D:\Projects\C#\HexaCode\HexaCode\bin\Debug\HexaCode.pdb
+D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.csprojAssemblyReference.cache
+D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.Form1.resources
+D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.Properties.Resources.resources
+D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.csproj.GenerateResource.cache
+D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.csproj.CoreCompileInputs.cache
+D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.exe
+D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.pdb
