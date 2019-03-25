@@ -60,48 +60,52 @@ namespace HexaCode
         private void pictureBoxMain_Paint(object sender, PaintEventArgs e)
         {
             const float R = 25f;
-            string testStr = "ABC";
+            const float distanceBetweenHexes = 0f;
+            const string testStr = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
             var useLargeAlphabet =
                 testStr.Any(c => !_alphabet.Contains(c)); //если хотя бы 1 символ в обычном алфавите отсутствует
             var binarySymbolLength = 6 + (useLargeAlphabet ? 1 : 0);
 
-            StringBuilder sb = new StringBuilder(testStr.Length * binarySymbolLength);
+            var sb = new StringBuilder(testStr.Length * binarySymbolLength);
             if (useLargeAlphabet)
             {
-                for (int i = 0; i < testStr.Length; i++)
+                foreach (var t in testStr)
                 {
-                    sb.Append(Convert.ToString(Array.IndexOf(_largeAlphabet, testStr[i]), 2)
+                    sb.Append(Convert.ToString(Array.IndexOf(_largeAlphabet, t), 2)
                         .PadLeft(binarySymbolLength, '0'));
                 }
             }
             else
             {
-                for (int i = 0; i < testStr.Length; i++)
+                foreach (var t in testStr)
                 {
-                    sb.Append(Convert.ToString(Array.IndexOf(_alphabet, testStr[i]), 2)
+                    sb.Append(Convert.ToString(Array.IndexOf(_alphabet, t), 2)
                         .PadLeft(binarySymbolLength, '0'));
                 }
             }
 
 
-            string binaryString = sb.ToString();
+            var binaryString = sb.ToString();
 
             var centerX = pictureBoxMain.Width / 2f;
             var centerY = pictureBoxMain.Height / 2f;
-            var centerPointRadius = 10f;
+            const float centerPointRadius = 10f;
             var sqrt3 = (float) Math.Sqrt(3);
             for (int i = 0; i < (int) Math.Ceiling(binaryString.Length / 6f); i++)
             {
+                //i - индекс текущего шестиугольника
+                //i * 6 - индекс текущего бинарного символа
                 var binaryPieceLength = (binaryString.Length - i * 6) > 6 ? 6 : (binaryString.Length - i * 6);
-                bool[] binaryPiece = new bool[binaryPieceLength];
+                var binaryPiece = new bool[binaryPieceLength];
                 for (int j = i; j < binaryPieceLength + i && j < binaryString.Length; j++)
                 {
                     binaryPiece[j - i] = binaryString[j] == '1';
                 }
 
-                int letterLayer = i / (6 * binarySymbolLength) + 1; //вычисляем слой буквы
-                float drawingR = R;
-                if (letterLayer % 2 == 1) //для нечётного слоя
+                var letterLayer = i * 6 / (6 * binarySymbolLength) + 1; //вычисляем слой буквы
+                var drawingR = R + distanceBetweenHexes;
+                var evenLayer = letterLayer % 2 == 0;
+                if (!evenLayer) //для нечётного слоя
                 {
                     drawingR *= (letterLayer / 2 + 1) * sqrt3;
                 }
@@ -110,16 +114,22 @@ namespace HexaCode
                     drawingR *= 3 * letterLayer / 2f;
                 }
 
-                var hexagonX = centerX + drawingR * (float) Math.Cos(Pi3 * i - (letterLayer % 2 == 1 ? Pi6 : 0f));
-                var hexagonY = centerY + drawingR * (float) Math.Sin(Pi3 * i - (letterLayer % 2 == 1 ? Pi6 : 0f));
+                //чётные слои поворачивыаем на 30 градусов (пи на 6)
+                var hexagonX = centerX + drawingR * (float) Math.Cos(Pi3 * i - (evenLayer ? 0f : Pi6));
+                var hexagonY = centerY + drawingR * (float) Math.Sin(Pi3 * i - (evenLayer ? 0f : Pi6));
+
+                //рисуем шестиугольник
                 drawHexagon(hexagonX, hexagonY, R, e.Graphics, binaryPiece);
+
+                //выводим бинарную строку
                 e.Graphics.DrawString(
                     string.Join("", binaryPiece.Select(t => t ? '1' : '0')).Substring(0, binaryPieceLength).ToUpper(),
                     DefaultFont, Brushes.Red, hexagonX, hexagonY);
+
+                //заполняем центр (дебаг)
                 e.Graphics.FillEllipse(Brushes.Black, hexagonX - centerPointRadius / 2,
                     hexagonY - centerPointRadius / 2,
                     centerPointRadius, centerPointRadius);
-                //пробегаем 6 точек шестиугольника разметки
             }
         }
     }
