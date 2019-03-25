@@ -91,27 +91,37 @@ namespace HexaCode
             var centerY = pictureBoxMain.Height / 2f;
             const float centerPointRadius = 10f;
             var sqrt3 = (float) Math.Sqrt(3);
+
+            var hex = 6;
+
+
             for (int i = 0; i < (int) Math.Ceiling(binaryString.Length / 6f); i++)
             {
                 //i - индекс текущего шестиугольника
                 //i * 6 - индекс текущего бинарного символа
-                var binaryPieceLength = (binaryString.Length - i * 6) > 6 ? 6 : (binaryString.Length - i * 6);
+                var binaryPieceLength = (binaryString.Length - i * hex) > hex ? hex : (binaryString.Length - i * hex);
                 var binaryPiece = new bool[binaryPieceLength];
                 for (int j = i; j < binaryPieceLength + i && j < binaryString.Length; j++)
                 {
                     binaryPiece[j - i] = binaryString[j] == '1';
                 }
 
-                var letterLayer = i * 6 / (6 * binarySymbolLength) + 1; //вычисляем слой буквы
+                var pieceNumber = i / 6 + 1;
+                var pieceLayer = 1; //вычисляем слой буквы
+                for (int sub = 1; pieceNumber - sub > 0; pieceLayer++)
+                {
+                    pieceNumber -= sub;
+                }
+
                 var drawingR = R + distanceBetweenHexes;
-                var evenLayer = letterLayer % 2 == 0;
+                var evenLayer = pieceLayer % 2 == 0;
                 if (!evenLayer) //для нечётного слоя
                 {
-                    drawingR *= (letterLayer / 2 + 1) * sqrt3;
+                    drawingR *= (pieceLayer / 2 + 1) * sqrt3;
                 }
                 else
                 {
-                    drawingR *= 3 * letterLayer / 2f;
+                    drawingR *= 3 * pieceLayer / 2f;
                 }
 
                 //чётные слои поворачивыаем на 30 градусов (пи на 6)
