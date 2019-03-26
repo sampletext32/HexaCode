@@ -70,9 +70,9 @@ namespace HexaCode
         {
             //Константы
             const float R = 25f; //Радиус описанной вокруг гексагона окружности
-            const float distanceBetweenHexes = 25f; //Расстояние между ячейками
+            const float distanceBetweenHexes = 0f; //Расстояние между ячейками
             const float drawingR = R + distanceBetweenHexes / 2; //Размер рисуемой ячейки
-            const string originText = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+            const string originText = "aaaaaaaaaaaaaaaaaaaaaaaaa";
 
             //если хотя бы 1 символ в обычном алфавите отсутствует
             var useLargeAlphabet = originText.Any(c => !_alphabet.Contains(c));
