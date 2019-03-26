@@ -33,15 +33,17 @@ namespace HexaCode
                 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '{', '|', '}', '~'
             };
 
+        private readonly float _sqrt3 = (float) Math.Sqrt(3);
+        private readonly float _sqrt2 = (float) Math.Sqrt(2);
         private const float FPi = (float) Math.PI;
         private const float Pi2 = (float) Math.PI / 2;
         private const float Pi3 = (float) Math.PI / 3;
         private const float Pi6 = (float) Math.PI / 6;
 
-        private void drawHexagon(float xCenter, float yCenter, float radius, Graphics graphics, bool[] binary)
+        private static void DrawHexagon(float xCenter, float yCenter, float radius, Graphics graphics, bool[] binary)
         {
             var pointCenter = new PointF(xCenter, yCenter);
-            for (int i = 0; i <= 5; i++)
+            for (var i = 0; i <= 5; i++)
             {
                 var x = xCenter + radius * (float) Math.Cos(Pi3 * i);
                 var y = yCenter + radius * (float) Math.Sin(Pi3 * i);
@@ -59,159 +61,131 @@ namespace HexaCode
             }
         }
 
-        private float DegreeToRadian(float angle)
+        private string ToBinaryString(int value, int strLength)
         {
-            return (float) Math.PI * angle / 180.0f;
-        }
-
-        private void Interpolate(float x1, float y1, float x2, float y2, float value)
-        {
-            var x = x1 + (x2 - x1) * value;
-            var y = y1 + (y2 - y1) * value;
-        }
-
-        private float clampValue(float betweenFirst, float betweenSecond, float betweenOriginFirst,
-            float betweenOriginSecond, float value)
-        {
-            var position = ((value - betweenOriginFirst) / (betweenOriginSecond - betweenOriginFirst));
-            return betweenFirst + (betweenSecond - betweenFirst) * position;
+            return Convert.ToString(value, 2).PadLeft(strLength, '0');
         }
 
         private void pictureBoxMain_Paint(object sender, PaintEventArgs e)
         {
-            const float R = 25f;
-            const float distanceBetweenHexes = 0f;
-            const string testStr = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-            var useLargeAlphabet =
-                testStr.Any(c => !_alphabet.Contains(c)); //если хотя бы 1 символ в обычном алфавите отсутствует
+            //Константы
+            const float R = 25f; //Радиус описанной вокруг гексагона окружности
+            const float distanceBetweenHexes = 25f; //Расстояние между ячейками
+            const float drawingR = R + distanceBetweenHexes / 2; //Размер рисуемой ячейки
+            const string originText = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+            //если хотя бы 1 символ в обычном алфавите отсутствует
+            var useLargeAlphabet = originText.Any(c => !_alphabet.Contains(c));
+
+            //длина бинарного символа (кол-во бит на символ)
             var binarySymbolLength = 6 + (useLargeAlphabet ? 1 : 0);
 
-            var sb = new StringBuilder(testStr.Length * binarySymbolLength);
-            if (useLargeAlphabet)
+            var sb = new StringBuilder(originText.Length * binarySymbolLength);
+            var arr = useLargeAlphabet ? _largeAlphabet : _alphabet;
+            foreach (var t in originText)
             {
-                foreach (var t in testStr)
-                {
-                    sb.Append(Convert.ToString(Array.IndexOf(_largeAlphabet, t), 2)
-                        .PadLeft(binarySymbolLength, '0'));
-                }
+                sb.Append(ToBinaryString(Array.IndexOf(arr, t), binarySymbolLength));
             }
-            else
-            {
-                foreach (var t in testStr)
-                {
-                    sb.Append(Convert.ToString(Array.IndexOf(_alphabet, t), 2)
-                        .PadLeft(binarySymbolLength, '0'));
-                }
-            }
-
 
             var binaryString = sb.ToString();
 
             var centerX = pictureBoxMain.Width / 2f;
             var centerY = pictureBoxMain.Height / 2f;
             const float centerPointRadius = 10f;
-            var sqrt3 = (float) Math.Sqrt(3);
-            var sqrt2 = (float) Math.Sqrt(2);
+
 
             e.Graphics.DrawLine(Pens.DarkSlateGray, centerX, 0, centerX, pictureBoxMain.Height);
             e.Graphics.DrawLine(Pens.DarkSlateGray, 0, centerY, pictureBoxMain.Width, centerY);
 
-            var hex = 6;
 
-
-            for (int i = 0; i < testStr.Length; i++)
+            for (var i = 0; i < originText.Length; i++)
             {
                 //i - индекс текущего шестиугольника
                 //i * 6 - индекс текущего бинарного символа
-                var binaryPieceLength = (binaryString.Length - i * hex) > hex ? hex : (binaryString.Length - i * hex);
+                //binaryPieceLength - кол-во кусочков в выделяемом гексагоне
+                var binaryPieceLength = (binaryString.Length - i * binarySymbolLength) > binarySymbolLength
+                    ? binarySymbolLength
+                    : (binaryString.Length - i * binarySymbolLength);
                 var binaryPiece = new bool[binaryPieceLength];
-                for (int j = i; j < binaryPieceLength + i && j < binaryString.Length; j++)
+                for (var j = 0; j < binaryPieceLength && j < binaryString.Length; j++)
                 {
-                    //binaryPiece[j - i] = binaryString[j] == '1';
-                    binaryPiece[j - i] = false;
+                    binaryPiece[j] = binaryString[i * 6 + j] == '1';
+                    //binaryPiece[j - i] = false;
                 }
 
                 //считаем по формуле pieces = 1 * 6 + 2 * 6 + 3 * 6
                 //тогда pieces / 6 = 1 + 2 + 3 + 4 
-                //и тогда, вычитая последовательно числа от 1 до N мы узнаем на каком слое лежит данный гексагон
+                //но pieces / 6 = i
+                //тогда, вычитая последовательно числа от 1 до N мы узнаем на каком слое лежит данный гексагон
 
-                var index = i;
+                var index = i; //индекс символа в текущем слое
                 var layer = 1; //вычисляем слой буквы
-                for (int sub = 1; index - sub * 6 >= 0; layer++, sub++)
+                for (var sub = 1; index - sub * 6 >= 0; layer++, sub++)
                 {
                     index -= sub * 6;
                 }
 
-                var drawingR = layer * (sqrt3 * R + distanceBetweenHexes);
-                var evenLayer = layer % 2 == 0;
-                //if (!evenLayer) //для нечётного слоя
-                //{
-                //    drawingR *= (pieceLayer / 2 + 1) * sqrt3;
-                //}
-                //else
-                //{
-                //    drawingR *= 3 * pieceLayer / 2f;
-                //}
+                //чётный ли слой
+                //var isEvenLayer = layer % 2 == 0; 
 
-                var angleBetweenHexagons = 60f / layer; //угол поворота между гексагонами
+                //количество гексагонов в слое
+                //var hexagonsInLayer = layer * 6; 
 
-                var hexagonsInLayer = layer * 6; //количество гексагонов в слое
+                var hexesInSide = layer + 1;
 
-                var radianBetweenHexagons = DegreeToRadian(angleBetweenHexagons); //кол-во радиан между гексагонами
-
-                var layerStartingRadian = evenLayer ? 0f : radianBetweenHexagons / 2f; //стартовый радиан поворота слоя
-
-                var hexagonRadian =
-                    layerStartingRadian + radianBetweenHexagons * index; //конечный радиан поворота центра гексагона
-
-                
-
-                //подтянуть если не pi/6 или не pi/2
-                var phi = float.NaN;
-                if (Math.Abs(hexagonRadian - Pi6) > 0.01f)
+                var vecX = centerX + 1.5f * drawingR * layer; // сдвигаемся в правый верхний угол
+                var vecY = centerY - _sqrt3 / 2 * drawingR * layer;
+                //начинаем в цикле сдвигаться по грани гексагона
+                for (var j = 0; j <= index; j++)
                 {
-                    phi = Pi6;
-                }
-                else if (Math.Abs(hexagonRadian - 5 * Pi6) > 0.01f)
-                {
-                    phi = 5 * Pi6;
-                }
-                else if (Math.Abs(hexagonRadian - 7 * Pi6) > 0.01f)
-                {
-                    phi = 7 * Pi6;
-                }
-                else if (Math.Abs(hexagonRadian - 11 * Pi6) > 0.01f)
-                {
-                    phi = 11 * Pi6;
-                }
-                else if (Math.Abs(hexagonRadian - FPi) > 0.01f)
-                {
-                    phi = FPi;
-                }
-                else if (Math.Abs(hexagonRadian - 2 * FPi) > 0.01f)
-                {
-                    phi = 2 * FPi;
-                }
-                
-                if (!float.IsNaN(phi))
-                {
-                    var dx = (float) Math.Cos(phi);
-                    var dy = (float) Math.Sin(phi);
-                    drawingR *= 2 * dy;
-                }
-                //реальные координаты гексагона
-                float hexagonX = centerX + drawingR * (float)Math.Cos(hexagonRadian);
-                float hexagonY = centerY + drawingR * (float)Math.Sin(hexagonRadian);
-                //рисуем шестиугольник
-                drawHexagon(hexagonX, hexagonY, R, e.Graphics, binaryPiece);
+                    for (int side = 0; side < hexesInSide - 1 && j < index; side++, j++)
+                    {
+                        vecY += _sqrt3 * drawingR;
+                    }
 
+                    for (int side = 0; side < hexesInSide - 1 && j < index; side++, j++)
+                    {
+                        vecY += drawingR * _sqrt3 / 2;
+                        vecX -= 1.5f * drawingR;
+                    }
+
+                    for (int side = 0; side < hexesInSide - 1 && j < index; side++, j++)
+                    {
+                        vecY -= drawingR * _sqrt3 / 2;
+                        vecX -= 1.5f * drawingR;
+                    }
+
+                    for (int side = 0; side < hexesInSide - 1 && j < index; side++, j++)
+                    {
+                        vecY -= _sqrt3 * drawingR;
+                    }
+
+                    for (int side = 0; side < hexesInSide - 1 && j < index; side++, j++)
+                    {
+                        vecY -= drawingR * _sqrt3 / 2;
+                        vecX += 1.5f * drawingR;
+                    }
+
+                    for (int side = 0; side < hexesInSide - 1 && j < index; side++, j++)
+                    {
+                        vecY += drawingR * _sqrt3 / 2;
+                        vecX += 1.5f * drawingR;
+                    }
+                }
+
+
+                ////реальные координаты гексагона
+                float hexagonX = vecX;
+                float hexagonY = vecY;
+                //рисуем гексагон
+                DrawHexagon(hexagonX, hexagonY, R, e.Graphics, binaryPiece);
+
+                var binDump = string.Join("", binaryPiece.Select(t => t ? '1' : '0')).Substring(0, binaryPieceLength)
+                    .ToUpper();
+                var textSize = e.Graphics.MeasureString(binDump, DefaultFont);
                 //выводим бинарную строку
-                //e.Graphics.DrawString(
-                //    string.Join("", binaryPiece.Select(t => t ? '1' : '0')).Substring(0, binaryPieceLength).ToUpper(),
-                //    DefaultFont, Brushes.Red, hexagonX, hexagonY);
-                e.Graphics.DrawString(
-                    layer + ":" + index,
-                    DefaultFont, Brushes.Red, hexagonX, hexagonY);
+                e.Graphics.DrawString(binDump, DefaultFont, Brushes.Red, hexagonX - textSize.Width / 2,
+                    hexagonY - textSize.Height / 2);
 
                 //заполняем центр (дебаг)
                 e.Graphics.FillEllipse(Brushes.Black, hexagonX - centerPointRadius / 2,
