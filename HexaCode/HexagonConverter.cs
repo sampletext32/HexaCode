@@ -115,6 +115,20 @@ namespace HexaCode
                 (triangle.Item1.Y + triangle.Item2.Y + triangle.Item3.Y) / 3f);
         }
 
+        private List<PointF> GetPixelsFromCenter(PointF centerPoint)
+        {
+            var drawingR = GetDrawingR();
+            List<PointF> list = new List<PointF>();
+            float dy = _sqrt3 / 2 * drawingR / 2;
+            list.Add(new PointF(centerPoint.X + drawingR / 2, centerPoint.Y + dy));
+            list.Add(new PointF(centerPoint.X, centerPoint.Y + dy));
+            list.Add(new PointF(centerPoint.X - drawingR / 2, centerPoint.Y + dy));
+            list.Add(new PointF(centerPoint.X - drawingR / 2, centerPoint.Y - dy));
+            list.Add(new PointF(centerPoint.X, centerPoint.Y - dy));
+            list.Add(new PointF(centerPoint.X + drawingR / 2, centerPoint.Y - dy));
+            return list;
+        }
+
         private static void DrawHexagon(float xCenter, float yCenter, float radius, Graphics graphics, bool[] binary)
         {
             var pointCenter = new PointF(xCenter, yCenter);
@@ -134,6 +148,7 @@ namespace HexaCode
                 }
             }
         }
+
 
         private bool[] ToBinaryPieceFromPosition(string binaryString, int position, int digitsPerPiece)
         {
@@ -184,6 +199,7 @@ namespace HexaCode
             Array.Reverse(array);
             return new String(array);
         }
+
 
         //precision [0..255]
         public string ParseBitmap(Bitmap bitmap, int precision = 10)
@@ -275,12 +291,10 @@ namespace HexaCode
                 }
 
                 var hexagonCenterPoint = new PointF(hexagonX, hexagonY);
-                var points = ListHexagonPoints(hexagonCenterPoint, _r);
-                var triangles = ListHexagonTriangles(points, hexagonCenterPoint);
-                for (int i = triangles.Count - 1; i >= 0; i--)
+                var pixels = GetPixelsFromCenter(hexagonCenterPoint);
+                for (int i = 0; i < pixels.Count; i++)
                 {
-                    var centerTriangle = CenterTriangle(triangles[i]);
-                    var value = bitmap.GetPixel((int) centerTriangle.X, (int) centerTriangle.Y);
+                    var value = bitmap.GetPixel((int)pixels[i].X, (int)pixels[i].Y);
                     if (value.A == 255) //black
                     {
                         binaryStringBuilder.Append('1');

@@ -15,7 +15,7 @@ namespace HexaCode
 
         private void pictureBoxMain_Paint(object sender, PaintEventArgs e)
         {
-            Bitmap b = new HexagonConverter().GenerateBitmap("aaa44a");
+            Bitmap b = new HexagonConverter().GenerateBitmap("b");
             
             e.Graphics.DrawImage(b, new Point(0, 0));
             string s = new HexagonConverter().ParseBitmap(b);
