@@ -70,7 +70,7 @@ namespace HexaCode
 
         private float GetHeight(int layer)
         {
-            return 2 * (2 * layer + 1) * _sqrt3 * GetDrawingR();
+            return (2 * layer + 1) * _sqrt3 * GetDrawingR();
         }
 
         private static int GetItemLayer(int item)
@@ -359,7 +359,11 @@ namespace HexaCode
                 content = content.Remove(0, 6);
             }
 
-            list.Add(content.PadRight(6, '0'));
+            if (content.Length > 0)
+            {
+                list.Add(content.PadRight(6, '0'));
+            }
+
             return list;
         }
 
@@ -368,11 +372,11 @@ namespace HexaCode
             Logger.AppendLine("Start Generate Bitmap From Content: " + content);
             var drawingR = GetDrawingR();
             Logger.AppendLine("drawingR = " + drawingR);
-            var maxLayer = GetItemLayer(content.Length);
+            var maxLayer = GetItemLayer(content.Length - 1);
             Logger.AppendLine("maxLayer = " + maxLayer);
             var width = GetWidth(maxLayer);
             Logger.AppendLine("width = " + width);
-            var height = GetWidth(maxLayer);
+            var height = GetHeight(maxLayer);
             Logger.AppendLine("height = " + height);
 
             var bitmap = new Bitmap((int) Math.Ceiling(width), (int) Math.Ceiling(height));

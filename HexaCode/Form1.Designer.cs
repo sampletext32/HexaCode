@@ -29,8 +29,10 @@
         private void InitializeComponent()
         {
             this.pictureBoxMain = new System.Windows.Forms.PictureBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.buttonGenerate = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.buttonParse = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             this.SuspendLayout();
             // 
@@ -44,42 +46,64 @@
             this.pictureBoxMain.TabStop = false;
             this.pictureBoxMain.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBoxMain_Paint);
             // 
-            // richTextBox1
+            // buttonGenerate
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(576, 8);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(408, 376);
-            this.richTextBox1.TabIndex = 1;
-            this.richTextBox1.Text = "";
+            this.buttonGenerate.Location = new System.Drawing.Point(584, 56);
+            this.buttonGenerate.Name = "buttonGenerate";
+            this.buttonGenerate.Size = new System.Drawing.Size(168, 32);
+            this.buttonGenerate.TabIndex = 1;
+            this.buttonGenerate.Text = "Generate";
+            this.buttonGenerate.UseVisualStyleBackColor = true;
+            this.buttonGenerate.Click += new System.EventHandler(this.buttonGenerate_Click);
             // 
-            // richTextBox2
+            // textBox1
             // 
-            this.richTextBox2.Location = new System.Drawing.Point(992, 8);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(408, 376);
-            this.richTextBox2.TabIndex = 2;
-            this.richTextBox2.Text = "";
+            this.textBox1.Location = new System.Drawing.Point(584, 8);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(168, 22);
+            this.textBox1.TabIndex = 2;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(760, 8);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(168, 22);
+            this.textBox2.TabIndex = 3;
+            // 
+            // buttonParse
+            // 
+            this.buttonParse.Location = new System.Drawing.Point(760, 56);
+            this.buttonParse.Name = "buttonParse";
+            this.buttonParse.Size = new System.Drawing.Size(168, 32);
+            this.buttonParse.TabIndex = 4;
+            this.buttonParse.Text = "Parse";
+            this.buttonParse.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1403, 577);
-            this.Controls.Add(this.richTextBox2);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.buttonParse);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.buttonGenerate);
             this.Controls.Add(this.pictureBoxMain);
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.PictureBox pictureBoxMain;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.RichTextBox richTextBox2;
+        private System.Windows.Forms.Button buttonGenerate;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button buttonParse;
     }
 }
 
