@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 
@@ -42,7 +43,7 @@ namespace HexaCode
 
         private char[] _activeAlphabet;
 
-        public HexagonConverter(float r = 25f, float distanceBetweenHexes = 0f)
+        public HexagonConverter(float r = 50f, float distanceBetweenHexes = 0f)
         {
             _r = r;
             _distanceBetweenHexes = distanceBetweenHexes;
@@ -65,7 +66,13 @@ namespace HexaCode
 
         private int GetLayerFromWidth(int width)
         {
-            return (int) Math.Ceiling((width / 2f - _r) / 1.5f / GetDrawingR());
+            int layer = 0;
+            while (GetWidth(layer) < width)
+            {
+                layer++;
+            }
+
+            return layer - 1;
         }
 
         private float GetHeight(int layer)
@@ -132,14 +139,15 @@ namespace HexaCode
             {
                 if (i < binary.Length && binary[i])
                 {
-                    graphics.FillPolygon(Brushes.Black,
+                    graphics.FillPolygon(Brushes.Gray,
                         new[] {triangles[i].Item1, triangles[i].Item2, triangles[i].Item3});
                 }
                 else
                 {
-                    graphics.DrawPolygon(Pens.Black,
-                        new[] {triangles[i].Item1, triangles[i].Item2, triangles[i].Item3});
                 }
+
+                graphics.DrawPolygon(new Pen(Color.Gray, 5) {DashStyle = DashStyle.Solid},
+                    new[] {triangles[i].Item1, triangles[i].Item2, triangles[i].Item3});
             }
         }
 
@@ -194,6 +202,10 @@ namespace HexaCode
             return new String(array);
         }
 
+        private bool IsPixelBlack(Color pixel)
+        {
+            return pixel.R + pixel.G + pixel.B == 0;
+        }
 
         //precision [0..255]
         public string ParseBitmap(Bitmap bitmap, int precision = 10)
@@ -229,7 +241,7 @@ namespace HexaCode
                 Logger.AppendLine("Getting Pixel " + centerHexagonPixels[i]);
                 var value = bitmap.GetPixel((int) centerHexagonPixels[i].X, (int) centerHexagonPixels[i].Y);
                 Logger.AppendLine("Pixel Value " + value);
-                if (value.A == 255) //black
+                if (IsPixelBlack(value)) //black
                 {
                     centerBinaryStringBuilder.Append('1');
                 }
@@ -322,7 +334,7 @@ namespace HexaCode
                     Logger.AppendLine("Getting Pixel " + pixels[i]);
                     var value = bitmap.GetPixel((int) pixels[i].X, (int) pixels[i].Y);
                     Logger.AppendLine("Pixel Value " + value);
-                    if (value.A == 255) //black
+                    if (IsPixelBlack(value)) //black
                     {
                         binaryStringBuilder.Append('1');
                     }
@@ -369,6 +381,11 @@ namespace HexaCode
 
         public Bitmap GenerateBitmap(string content)
         {
+            if (content.Length == 0)
+            {
+                throw new IndexOutOfRangeException("Content Length 0");
+            }
+
             Logger.AppendLine("Start Generate Bitmap From Content: " + content);
             var drawingR = GetDrawingR();
             Logger.AppendLine("drawingR = " + drawingR);
@@ -384,6 +401,8 @@ namespace HexaCode
 
             var graphics = Graphics.FromImage(bitmap);
             Logger.AppendLine("Graphics Created");
+
+            graphics.FillRectangle(Brushes.White, 0, 0, width, height);
 
             //если хотя бы 1 символ в обычном алфавите отсутствует
             var useLargeAlphabet = content.Any(c => !_alphabet.Contains(c));
@@ -419,10 +438,19 @@ namespace HexaCode
             DrawHexagon(centerX, centerY, _r, graphics, new[] {useLargeAlphabet});
             Logger.AppendLine("CenterHexagon ready with flags: " + string.Join("", new[] {useLargeAlphabet}));
 
-            for (var i = 0; i < binaryPieces.Count; i++)
+            for (var i = 0; i < GetLayerSumHexagonsCount(maxLayer) - 1; i++)
             {
                 Logger.AppendLine("Creating " + i + " hexagon: ");
-                var binaryPiece = binaryPieces[i].Select(c => c == '1').ToArray();
+                bool[] binaryPiece;
+                if (i < binaryPieces.Count)
+                {
+                    binaryPiece = binaryPieces[i].Select(c => c == '1').ToArray();
+                }
+                else
+                {
+                    binaryPiece = new[] {false, false, false, false, false, false};
+                }
+
                 Logger.AppendLine("Current binary piece: " + string.Join("", binaryPiece));
                 //считаем по формуле pieces = 1 * 6 + 2 * 6 + 3 * 6
                 //тогда pieces / 6 = 1 + 2 + 3 + 4 
@@ -501,6 +529,10 @@ namespace HexaCode
                 //рисуем гексагон
                 DrawHexagon(hexagonX, hexagonY, _r, graphics, binaryPiece);
                 Logger.AppendLine("Hexagon Finished");
+            }
+
+            for (var i = binaryPieces.Count; i < GetLayerSumHexagonsCount(maxLayer); i++)
+            {
             }
 
             graphics.Dispose();

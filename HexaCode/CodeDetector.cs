@@ -31,10 +31,11 @@ namespace HexaCode
                     double perimeter = CvInvoke.ArcLength(contours[i], true);
                     VectorOfPoint approx = new VectorOfPoint();
                     CvInvoke.ApproxPolyDP(contours[i], approx, 0.04 * perimeter, true);
+                    
                     if (approx.Size == numof && contours[i].Size > lastsize)
                     {
                         lastsize = contours[i].Size;
-                        //CvInvoke.DrawContours(image, contours, i, new MCvScalar(0, 0, 255), 10);
+                        //CvInvoke.DrawContours(image, contours, -1, new MCvScalar(0, 0, 255), 10);
                         var r = CvInvoke.BoundingRectangle(contours[i]);
                         temp.ROI = r;
                         var img = temp.Copy();
