@@ -15,10 +15,11 @@ namespace HexaCode
 
         private void pictureBoxMain_Paint(object sender, PaintEventArgs e)
         {
-            Bitmap b = new HexagonConverter().GenerateBitmap("b");
-            
+            var converter = new HexagonConverter();
+            Bitmap b = converter.GenerateBitmap("{}{}");
             e.Graphics.DrawImage(b, new Point(0, 0));
-            string s = new HexagonConverter().ParseBitmap(b);
+            Logger.Clear();
+            string s = converter.ParseBitmap(b);
             MessageBox.Show(s);
         }
     }
