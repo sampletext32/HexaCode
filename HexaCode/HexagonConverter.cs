@@ -37,6 +37,8 @@ namespace HexaCode
         private readonly float _sqrt3 = (float) Math.Sqrt(3);
         private readonly float _sqrt2 = (float) Math.Sqrt(2);
 
+        private const float minRadius = 5f;
+
         //Константы
         private readonly float _r; //Радиус описанной вокруг гексагона окружности
         private readonly float _distanceBetweenHexes; //Расстояние между ячейками
@@ -146,25 +148,8 @@ namespace HexaCode
                 {
                 }
 
-                graphics.DrawPolygon(new Pen(Color.Gray, 5) {DashStyle = DashStyle.Solid},
-                    new[] {triangles[i].Item1, triangles[i].Item2, triangles[i].Item3});
+                graphics.DrawPolygon(Pens.Gray, new[] {triangles[i].Item1, triangles[i].Item2, triangles[i].Item3});
             }
-        }
-
-
-        private bool[] ToBinaryPieceFromPosition(string binaryString, int position, int digitsPerPiece)
-        {
-            var binaryPieceLength = (binaryString.Length - position * digitsPerPiece) > digitsPerPiece
-                ? digitsPerPiece
-                : (binaryString.Length - position * digitsPerPiece);
-            var binaryPiece = new bool[binaryPieceLength];
-            for (var j = 0; j < binaryPieceLength && j < binaryString.Length; j++)
-            {
-                binaryPiece[j] = binaryString[position * 6 + j] == '1';
-                //binaryPiece[j] = false;
-            }
-
-            return binaryPiece;
         }
 
         private int GetAlphabetBinaryDigits(bool useLargeAlphabet)
@@ -196,19 +181,27 @@ namespace HexaCode
         {
             if (text == null) return null;
 
-            // this was posted by petebob as well 
-            char[] array = text.ToCharArray();
+            var array = text.ToCharArray();
             Array.Reverse(array);
-            return new String(array);
+            return new string(array);
         }
 
-        private bool IsPixelBlack(Color pixel)
+        private static bool IsPixelBlack(Color pixel)
         {
             return pixel.R + pixel.G + pixel.B == 0;
         }
 
+        private void CorrectBitmap(Bitmap bitmap)
+        {
+            var width = bitmap.Width;
+            var height = bitmap.Height;
+
+            var centerX = width / 2f;
+            var centerY = height / 2f;
+        }
+
         //precision [0..255]
-        public string ParseBitmap(Bitmap bitmap, int precision = 10)
+        public string ParseCorrectBitmap(Bitmap bitmap, int precision = 10)
         {
             Logger.AppendLine("Start Parse Bitmap:");
             var drawingR = GetDrawingR();
@@ -232,8 +225,6 @@ namespace HexaCode
 
             var centerHexagonCenter = new PointF(centerX, centerY);
             Logger.AppendLine("centerHexagonCenter: " + centerHexagonCenter);
-            var centerHexagonPoints = ListHexagonPoints(centerHexagonCenter, _r);
-            var centerHexagonTriangles = ListHexagonTriangles(centerHexagonPoints, centerHexagonCenter);
             var centerBinaryStringBuilder = new StringBuilder();
             var centerHexagonPixels = GetPixelsFromCenter(centerHexagonCenter);
             for (int i = centerHexagonPixels.Count - 1; i >= 0; i--)

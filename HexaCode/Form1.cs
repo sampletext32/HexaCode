@@ -54,7 +54,7 @@ namespace HexaCode
             var detectedImage = codeDetector.Detect(img);
             var detectedBitmap = detectedImage.Bitmap;
             _displayingBitmap = detectedBitmap;
-            var parsedData = _converter.ParseBitmap(_displayingBitmap);
+            var parsedData = _converter.ParseCorrectBitmap(_displayingBitmap);
             textBox2.Text = parsedData;
         }
 
@@ -64,31 +64,28 @@ namespace HexaCode
         int maxBlackX = 0;
         int maxBlackY = 0;
 
-        private void button1_Click(object sender, EventArgs e)
+        Bitmap ProcessImageFile(string fileName)
         {
-            _displayingBitmap = (Bitmap) Image.FromFile("image.jpg");
-
-            pictureBoxMain.Width = _displayingBitmap.Width;
-            pictureBoxMain.Height = _displayingBitmap.Height;
+            Bitmap bitmap = (Bitmap)Image.FromFile(fileName);
             
-            minBlackX = pictureBoxMain.Width;
-            minBlackY = pictureBoxMain.Height;
+            minBlackX = bitmap.Width;
+            minBlackY = bitmap.Height;
 
             maxBlackX = 0;
             maxBlackY = 0;
 
-            for (int i = 0; i < _displayingBitmap.Width; i++)
+            for (int i = 0; i < bitmap.Width; i++)
             {
-                for (int j = _displayingBitmap.Height - 1; j >= 0; j--)
+                for (int j = bitmap.Height - 1; j >= 0; j--)
                 {
-                    var pixel = _displayingBitmap.GetPixel(i, j);
+                    var pixel = bitmap.GetPixel(i, j);
                     if (pixel.GetBrightness() > 0.7f)
                     {
-                        _displayingBitmap.SetPixel(i, j, Color.White);
+                        bitmap.SetPixel(i, j, Color.White);
                     }
                     else
                     {
-                        _displayingBitmap.SetPixel(i, j, Color.Black);
+                        bitmap.SetPixel(i, j, Color.Black);
                         if (i > maxBlackX)
                         {
                             maxBlackX = i;
@@ -118,16 +115,58 @@ namespace HexaCode
             {
                 for (int j = 0; j < maxBlackY - minBlackY; j++)
                 {
-                    trimmedBitmap.SetPixel(i,j, _displayingBitmap.GetPixel(minBlackX + i, minBlackY + j));
+                    trimmedBitmap.SetPixel(i, j, _displayingBitmap.GetPixel(minBlackX + i, minBlackY + j));
                 }
             }
 
-            _displayingBitmap = trimmedBitmap;
+            bitmap = trimmedBitmap;
+            return bitmap;
+        }
 
-            pictureBoxMain.Width = _displayingBitmap.Width;
-            pictureBoxMain.Height = _displayingBitmap.Height;
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //Bitmap bitmap = ProcessImageFile("image.jpg");
+            //bitmap.Save("imageconverted.jpg", ImageFormat.Jpeg);
 
-            _displayingBitmap.Save("imageconverted.jpg", ImageFormat.Jpeg);
+            Bitmap bitmap = _converter.GenerateBitmap(textBox1.Text);
+
+            for (int i = 0; i < bitmap.Width; i++)
+            {
+                for (int j = bitmap.Height - 1; j >= 0; j--)
+                {
+                    var pixel = bitmap.GetPixel(i, j);
+                    if (pixel.GetBrightness() > 0.7f)
+                    {
+                        bitmap.SetPixel(i, j, Color.White);
+                    }
+                    else
+                    {
+                        bitmap.SetPixel(i, j, Color.Black);
+                        if (i > maxBlackX)
+                        {
+                            maxBlackX = i;
+                        }
+
+                        if (i < minBlackX)
+                        {
+                            minBlackX = i;
+                        }
+
+                        if (j > maxBlackY)
+                        {
+                            maxBlackY = j;
+                        }
+
+                        if (j < minBlackY)
+                        {
+                            minBlackY = j;
+                        }
+                    }
+                }
+            }
+
+            bitmap = ImageBorderAdder.AddBorder(bitmap, 10);
+            _displayingBitmap = bitmap;
 
             pictureBoxMain.Refresh();
         }
