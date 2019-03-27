@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -16,7 +17,7 @@ namespace HexaCode
             InitializeComponent();
         }
 
-        readonly HexagonConverter _converter = new HexagonConverter();
+        readonly HexagonConverter _converter = new HexagonConverter(45);
 
         private void pictureBoxMain_Paint(object sender, PaintEventArgs e)
         {
@@ -48,122 +49,39 @@ namespace HexaCode
 
         private void buttonParse_Click(object sender, EventArgs e)
         {
-            Bitmap b = _displayingBitmap;
-            Image<Bgr, byte> img = new Image<Bgr, byte>(b);
-            var codeDetector = new CodeDetector();
-            var detectedImage = codeDetector.Detect(img);
-            var detectedBitmap = detectedImage.Bitmap;
-            _displayingBitmap = detectedBitmap;
-            var parsedData = _converter.ParseCorrectBitmap(_displayingBitmap);
-            textBox2.Text = parsedData;
-        }
-
-        int minBlackX = 0;
-        int minBlackY = 0;
-
-        int maxBlackX = 0;
-        int maxBlackY = 0;
-
-        Bitmap ProcessImageFile(string fileName)
-        {
-            Bitmap bitmap = (Bitmap)Image.FromFile(fileName);
+            //Bitmap b = _displayingBitmap;
+            //Image<Bgr, byte> img = new Image<Bgr, byte>(b);
+            //var codeDetector = new CodeDetector();
+            //var detectedImage = codeDetector.Detect(img);
+            //var detectedBitmap = detectedImage.Bitmap;
+            //_displayingBitmap = detectedBitmap;
             
-            minBlackX = bitmap.Width;
-            minBlackY = bitmap.Height;
+            var b = ColorConverter.SplitColors(_displayingBitmap, 0.7f);
 
-            maxBlackX = 0;
-            maxBlackY = 0;
+            b = ColorConverter.TrimToBlack(b);
 
-            for (int i = 0; i < bitmap.Width; i++)
-            {
-                for (int j = bitmap.Height - 1; j >= 0; j--)
-                {
-                    var pixel = bitmap.GetPixel(i, j);
-                    if (pixel.GetBrightness() > 0.7f)
-                    {
-                        bitmap.SetPixel(i, j, Color.White);
-                    }
-                    else
-                    {
-                        bitmap.SetPixel(i, j, Color.Black);
-                        if (i > maxBlackX)
-                        {
-                            maxBlackX = i;
-                        }
+            b = ImageBorderAdder.AddBorder(b, 3);
 
-                        if (i < minBlackX)
-                        {
-                            minBlackX = i;
-                        }
+            var radius = HexagonConverter.GetHexagonRadiusFromImage(b, 0f);
+            
+            var converter = new HexagonConverter(radius, 0f);
 
-                        if (j > maxBlackY)
-                        {
-                            maxBlackY = j;
-                        }
-
-                        if (j < minBlackY)
-                        {
-                            minBlackY = j;
-                        }
-                    }
-                }
-            }
-
-            Bitmap trimmedBitmap = new Bitmap(maxBlackX - minBlackX, maxBlackY - minBlackY);
-
-            for (int i = 0; i < maxBlackX - minBlackX; i++)
-            {
-                for (int j = 0; j < maxBlackY - minBlackY; j++)
-                {
-                    trimmedBitmap.SetPixel(i, j, _displayingBitmap.GetPixel(minBlackX + i, minBlackY + j));
-                }
-            }
-
-            bitmap = trimmedBitmap;
-            return bitmap;
+            var logLines = Logger.GetLog().Split('\n');
+            Array.Reverse(logLines);
+            File.WriteAllText("log1.txt", string.Join("\n", logLines));
+            Logger.Clear();
+            var parsedData = converter.ParseCorrectBitmap(b);
+            _displayingBitmap = b;
+            pictureBoxMain.Refresh();
+            
+            File.WriteAllText("log2.txt", Logger.GetLog());
+            textBox2.Text = parsedData;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //Bitmap bitmap = ProcessImageFile("image.jpg");
-            //bitmap.Save("imageconverted.jpg", ImageFormat.Jpeg);
-
             Bitmap bitmap = _converter.GenerateBitmap(textBox1.Text);
-
-            for (int i = 0; i < bitmap.Width; i++)
-            {
-                for (int j = bitmap.Height - 1; j >= 0; j--)
-                {
-                    var pixel = bitmap.GetPixel(i, j);
-                    if (pixel.GetBrightness() > 0.7f)
-                    {
-                        bitmap.SetPixel(i, j, Color.White);
-                    }
-                    else
-                    {
-                        bitmap.SetPixel(i, j, Color.Black);
-                        if (i > maxBlackX)
-                        {
-                            maxBlackX = i;
-                        }
-
-                        if (i < minBlackX)
-                        {
-                            minBlackX = i;
-                        }
-
-                        if (j > maxBlackY)
-                        {
-                            maxBlackY = j;
-                        }
-
-                        if (j < minBlackY)
-                        {
-                            minBlackY = j;
-                        }
-                    }
-                }
-            }
+            
 
             bitmap = ImageBorderAdder.AddBorder(bitmap, 10);
             _displayingBitmap = bitmap;

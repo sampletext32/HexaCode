@@ -9,39 +9,112 @@ namespace HexaCode
 {
     class ColorConverter
     {
-        public static void ColorToHSV(Color color, out double hue, out double saturation, out double value)
+        public static Bitmap ToGrayScale(Bitmap source)
         {
-            int max = Math.Max(color.R, Math.Max(color.G, color.B));
-            int min = Math.Min(color.R, Math.Min(color.G, color.B));
+            Bitmap bitmap = new Bitmap(source.Width, source.Height);
+            int rgb;
+            Color c;
 
-            hue = color.GetHue();
-            saturation = (max == 0) ? 0 : 1d - (1d * min / max);
-            value = max / 255d;
+            for (int y = 0; y < bitmap.Height; y++)
+            {
+                for (int x = 0; x < bitmap.Width; x++)
+                {
+                    c = source.GetPixel(x, y);
+                    rgb = (int) Math.Round(.299 * c.R + .587 * c.G + .114 * c.B);
+                    bitmap.SetPixel(x, y, Color.FromArgb(rgb, rgb, rgb));
+                }
+            }
+
+            return bitmap;
         }
 
-        public static Color ColorFromHSV(double hue, double saturation, double value)
+        public static Bitmap SplitColors(Bitmap source, float brightnessLimit)
         {
-            int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
-            double f = hue / 60 - Math.Floor(hue / 60);
+            Bitmap bitmap = new Bitmap(source.Width, source.Height);
+            for (int i = 0; i < source.Width; i++)
+            {
+                for (int j = 0; j < source.Height; j++)
+                {
+                    var pixel = source.GetPixel(i, j);
+                    if (pixel.GetBrightness() > brightnessLimit)
+                    {
+                        bitmap.SetPixel(i, j, Color.White);
+                    }
+                    else
+                    {
+                        bitmap.SetPixel(i, j, Color.Black);
+                    }
+                }
+            }
 
-            value = value * 255;
-            int v = Convert.ToInt32(value);
-            int p = Convert.ToInt32(value * (1 - saturation));
-            int q = Convert.ToInt32(value * (1 - f * saturation));
-            int t = Convert.ToInt32(value * (1 - (1 - f) * saturation));
+            return bitmap;
+        }
 
-            if (hi == 0)
-                return Color.FromArgb(255, v, t, p);
-            else if (hi == 1)
-                return Color.FromArgb(255, q, v, p);
-            else if (hi == 2)
-                return Color.FromArgb(255, p, v, t);
-            else if (hi == 3)
-                return Color.FromArgb(255, p, q, v);
-            else if (hi == 4)
-                return Color.FromArgb(255, t, p, v);
-            else
-                return Color.FromArgb(255, v, p, q);
+        public static Bitmap TrimToBlack(Bitmap source)
+        {
+            int minBlackX = source.Width;
+            int minBlackY = source.Height;
+
+            int maxBlackX = 0;
+            int maxBlackY = 0;
+
+            for (int i = 0; i < source.Width; i++)
+            {
+                for (int j = 0; j < source.Height; j++)
+                {
+                    var pixel = source.GetPixel(i, j);
+                    if (pixel.GetBrightness() > 0.7f)
+                    {
+                        source.SetPixel(i, j, Color.White);
+                    }
+                    else
+                    {
+                        source.SetPixel(i, j, Color.Black);
+                        if (i > maxBlackX)
+                        {
+                            maxBlackX = i;
+                        }
+
+                        if (i < minBlackX)
+                        {
+                            minBlackX = i;
+                        }
+
+                        if (j > maxBlackY)
+                        {
+                            maxBlackY = j;
+                        }
+
+                        if (j < minBlackY)
+                        {
+                            minBlackY = j;
+                        }
+                    }
+                }
+            }
+
+            Bitmap trimmedBitmap = new Bitmap(maxBlackX - minBlackX + 1, maxBlackY - minBlackY + 1);
+
+            for (int i = 0; i < trimmedBitmap.Width; i++)
+            {
+                for (int j = 0; j < trimmedBitmap.Height; j++)
+                {
+                    trimmedBitmap.SetPixel(i, j, source.GetPixel(minBlackX + i, minBlackY + j));
+                }
+            }
+
+            return trimmedBitmap;
+        }
+
+        public static Bitmap ScaleBitmap(Bitmap source, float factor)
+        {
+            var newWidth = (int) (source.Width * factor);
+            var newHeight = (int) (source.Height * factor);
+            Bitmap bitmap = new Bitmap(newWidth, newHeight);
+            Graphics g = Graphics.FromImage(bitmap);
+            g.DrawImage(source, 0, 0, newWidth, newHeight);
+            g.Dispose();
+            return bitmap;
         }
     }
 }
