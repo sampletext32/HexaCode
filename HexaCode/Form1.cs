@@ -41,7 +41,7 @@ namespace HexaCode
             try
             {
                 var bitmap = _converter.GenerateBitmap(text);
-                SetImage(ColorConverter.AddBorder(_converter.GenerateBitmap(text), 10));
+                SetImage(ColorConverter.AddBorder(bitmap, 10));
                 //bitmap.Save("generated.jpg");
             }
             catch (IndexOutOfRangeException indexOutOfRangeException)

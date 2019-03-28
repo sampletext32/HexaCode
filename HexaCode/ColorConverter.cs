@@ -126,5 +126,10 @@ namespace HexaCode
             g.Dispose();
             return b;
         }
+
+        public static Bitmap CloneBitmap(Bitmap bitmap)
+        {
+            return new Bitmap(bitmap);
+        }
     }
 }

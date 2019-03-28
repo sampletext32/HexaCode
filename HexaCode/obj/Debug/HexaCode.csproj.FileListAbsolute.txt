@@ -21,3 +21,8 @@ D:\Projects\C#\HexaCode\HexaCode\bin\Debug\System.Data.SQLite.xml
 D:\Projects\C#\HexaCode\HexaCode\bin\Debug\System.Data.SQLite.dll.config
 D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.FormAdmin.resources
 D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.csproj.CopyComplete
+D:\Projects\C#\HexaCode\HexaCode\bin\Debug\Newtonsoft.Json.dll
+D:\Projects\C#\HexaCode\HexaCode\bin\Debug\Newtonsoft.Json.pdb
+D:\Projects\C#\HexaCode\HexaCode\bin\Debug\Newtonsoft.Json.xml
+D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.HexagonShowForm.resources
+D:\Projects\C#\HexaCode\HexaCode\obj\Debug\HexaCode.HexagonParseForm.resources

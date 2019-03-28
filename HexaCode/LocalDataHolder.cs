@@ -9,12 +9,25 @@ namespace HexaCode
         private static List<Manufacturer> manufacturers;
         private static List<Part> parts;
 
+        public static Country Country_Get(int index)
+        {
+            return countries[index];
+        }
+        public static Manufacturer Manufacturer_Get(int index)
+        {
+            return manufacturers[index];
+        }
+        public static Part Part_Get(int index)
+        {
+            return parts[index];
+        }
+
         public static List<Country> Country_SelectAll()
         {
             return countries;
         }
 
-        public static List<Manufacturer> Manufacturer_SelectAll()
+        public static List<Manufacturer> Manufacturers_SelectAll()
         {
             return manufacturers;
         }
