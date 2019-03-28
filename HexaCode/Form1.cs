@@ -17,27 +17,30 @@ namespace HexaCode
 
         readonly HexagonConverter _converter = new HexagonConverter(45);
 
+        private Bitmap _displayingBitmap;
+
         private void pictureBoxMain_Paint(object sender, PaintEventArgs e)
         {
             if (_displayingBitmap != null)
             {
                 e.Graphics.DrawImage(_displayingBitmap, 0, 0, pictureBoxMain.Width, pictureBoxMain.Height);
             }
-
-            //e.Graphics.DrawRectangle(Pens.Red, minBlackX, minBlackY, maxBlackX - minBlackX, maxBlackY - minBlackY);
         }
 
-        private Bitmap _displayingBitmap;
+        private void SetImage(Bitmap bitmap)
+        {
+            _displayingBitmap = bitmap;
+            pictureBoxMain.Width = _displayingBitmap.Width;
+            pictureBoxMain.Height = _displayingBitmap.Height;
+            pictureBoxMain.Refresh();
+        }
 
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
             string text = textBox1.Text;
             try
             {
-                _displayingBitmap = ColorConverter.AddBorder(_converter.GenerateBitmap(text), 10);
-                pictureBoxMain.Width = _displayingBitmap.Width;
-                pictureBoxMain.Height = _displayingBitmap.Height;
-                pictureBoxMain.Refresh();
+                SetImage(ColorConverter.AddBorder(_converter.GenerateBitmap(text), 10));
             }
             catch (IndexOutOfRangeException indexOutOfRangeException)
             {
@@ -47,38 +50,54 @@ namespace HexaCode
 
         private void buttonParse_Click(object sender, EventArgs e)
         {
-            var b = ColorConverter.SplitColors(_displayingBitmap, 0.7f);
+            //var b = (Bitmap) Image.FromFile("image.jpg");
+            try
+            {
+                var b = _converter.GenerateBitmap(textBox1.Text);
 
-            b = ColorConverter.TrimToBlack(b);
+                this.Text = "Finished Reading Image";
+                Application.DoEvents();
 
-            b = ColorConverter.AddBorder(b, 3);
+                b = ColorConverter.SplitColors(b, 0.7f);
 
-            var radius = HexagonConverter.GetHexagonRadiusFromImage(b, 0f);
-            
-            var converter = new HexagonConverter(radius);
-            
-            var parsedData = converter.ParseCorrectBitmap(b);
-            
-            textBox2.Text = parsedData;
+                this.Text = "Finished Spliting Colors";
+                Application.DoEvents();
 
-            _displayingBitmap = b;
-            pictureBoxMain.Refresh();
-        }
+                b = ColorConverter.TrimToBlack(b);
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Bitmap bitmap = _converter.GenerateBitmap(textBox1.Text);
-            
+                this.Text = "Finished Trimming To Black";
+                Application.DoEvents();
 
-            bitmap = ColorConverter.AddBorder(bitmap, 10);
-            _displayingBitmap = bitmap;
+                b = ColorConverter.AddBorder(b, 3);
 
-            pictureBoxMain.Refresh();
-        }
+                this.Text = "Finished Adding Border";
+                Application.DoEvents();
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            pictureBoxMain.Refresh();
+                var radius = HexagonConverter.GetHexagonRadiusFromImage(b, 0f);
+
+                this.Text = "Finished Getting Radius";
+                Application.DoEvents();
+
+                try
+                {
+                    var converter = new HexagonConverter(radius);
+                    var parsedData = converter.ParseCorrectBitmap(b);
+                    textBox2.Text = parsedData;
+                    this.Text = "Finished Parsing";
+                    Application.DoEvents();
+                }
+                catch (IndexOutOfRangeException exception)
+                {
+                    this.Text = "Error parsing Image: " + exception.Message;
+                    Application.DoEvents();
+                }
+
+                SetImage(b);
+            }
+            catch (IndexOutOfRangeException exception)
+            {
+                
+            }
         }
     }
 }

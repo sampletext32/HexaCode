@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace HexaCode
@@ -37,7 +38,8 @@ namespace HexaCode
         private static float _sqrt3 = (float) Math.Sqrt(3);
         private static float _sqrt2 = (float) Math.Sqrt(2);
 
-        private const float minRadius = 10f;
+        private const float minRadius = 15f;
+        private const float maxRadius = 50f;
 
         //Константы
         private readonly float _r; //Радиус описанной вокруг гексагона окружности
@@ -47,6 +49,11 @@ namespace HexaCode
 
         public HexagonConverter(float r = 50f, float distanceBetweenHexes = 0f)
         {
+            if (r < minRadius || r > maxRadius)
+            {
+                throw new IndexOutOfRangeException("Radius Incorrect");
+            }
+
             _r = r;
             _distanceBetweenHexes = distanceBetweenHexes;
         }
@@ -203,7 +210,7 @@ namespace HexaCode
             var centerHexagonCenter = new PointF(centerX, centerY);
             var centerBinaryStringBuilder = new StringBuilder();
 
-            var drawingR = GetDrawingR(minRadius, 0f);
+            var drawingR = GetDrawingR(width / 32f, 0f);
             var centerHexagonPixels = GetPixelsFromCenter(centerHexagonCenter, drawingR);
             for (int i = centerHexagonPixels.Count - 1; i >= 0; i--)
             {
@@ -246,7 +253,7 @@ namespace HexaCode
 
             var centerX = width / 2f;
             var centerY = height / 2f;
-            
+
             var maxLayer = GetLayerFromWidth(width, _r, _distanceBetweenHexes);
 
             var hexesInMaxLayerSide = maxLayer + 1;
@@ -268,7 +275,7 @@ namespace HexaCode
             }
 
             bool[] metaData = ToBoolArray(Reverse(centerBinaryStringBuilder.ToString()));
-            
+
             var useLargeAlphabet = metaData[0];
 
             _activeAlphabet = metaData[0] ? _largeAlphabet : _alphabet;
@@ -298,7 +305,7 @@ namespace HexaCode
 
                 var vecX = centerX + 1.5f * drawingR * currentLayer; // сдвигаемся в правый верхний угол
                 var vecY = centerY - _sqrt3 / 2 * drawingR * currentLayer;
-                
+
                 //начинаем в цикле сдвигаться по грани гексагона
                 for (var j = 0; j <= position; j++)
                 {
@@ -342,7 +349,7 @@ namespace HexaCode
                 var hexagonY = vecY;
 
                 var hexagonCenterPoint = new PointF(hexagonX, hexagonY);
-                
+
                 var pixels = GetPixelsFromCenter(hexagonCenterPoint, drawingR);
                 for (int i = pixels.Count - 1; i >= 0; i--)
                 {
@@ -350,16 +357,18 @@ namespace HexaCode
                     if (IsPixelBlack(value)) //black
                     {
                         binaryStringBuilder.Append('1');
-                        g.DrawString("1", font, Brushes.Red, pixels[i].X - size1.Width / 2, pixels[i].Y - size1.Height / 2);
+                        g.DrawString("1", font, Brushes.Red, pixels[i].X - size1.Width / 2,
+                            pixels[i].Y - size1.Height / 2);
                     }
                     else
                     {
                         binaryStringBuilder.Append('0');
-                        g.DrawString("0", font, Brushes.Red, pixels[i].X - size0.Width / 2, pixels[i].Y - size0.Height / 2);
+                        g.DrawString("0", font, Brushes.Red, pixels[i].X - size0.Width / 2,
+                            pixels[i].Y - size0.Height / 2);
                     }
                 }
             }
-            
+
             var binaryString = Reverse(binaryStringBuilder.ToString());
             return FromBinaryString(binaryString, useLargeAlphabet);
         }
@@ -399,17 +408,6 @@ namespace HexaCode
             {
                 throw new IndexOutOfRangeException("Content Length 0");
             }
-            
-            var drawingR = GetDrawingR(_r, _distanceBetweenHexes);
-            var maxLayer = GetItemLayer(content.Length - 1);
-            var width = GetWidth(maxLayer, _r, _distanceBetweenHexes);
-            var height = GetHeight(maxLayer);
-
-            var bitmap = new Bitmap((int) Math.Ceiling(width), (int) Math.Ceiling(height));
-
-            var graphics = Graphics.FromImage(bitmap);
-
-            graphics.FillRectangle(Brushes.White, 0, 0, width, height);
 
             //если хотя бы 1 символ в обычном алфавите отсутствует
             var useLargeAlphabet = content.Any(c => !_alphabet.Contains(c));
@@ -426,7 +424,23 @@ namespace HexaCode
 
             var binaryString = sb.ToString();
 
+            if (binaryString.Length > GetLayerSumHexagonsCount(32) * 6)
+            {
+                throw new IndexOutOfRangeException("Message is too long");
+            }
+
             var binaryPieces = DivideBy6(binaryString);
+
+            var drawingR = GetDrawingR(_r, _distanceBetweenHexes);
+            var maxLayer = GetItemLayer(content.Length - 1);
+            var width = GetWidth(maxLayer, _r, _distanceBetweenHexes);
+            var height = GetHeight(maxLayer);
+
+            var bitmap = new Bitmap((int) Math.Ceiling(width), (int) Math.Ceiling(height));
+
+            var graphics = Graphics.FromImage(bitmap);
+
+            graphics.FillRectangle(Brushes.White, 0, 0, width, height);
 
             var maxUsedLayer = GetItemLayer(binaryPieces.Count - 1);
 
@@ -437,7 +451,7 @@ namespace HexaCode
 
             var centerX = width / 2f;
             var centerY = height / 2f;
-            
+
             var metaData = new bool[6];
             metaData[0] = useLargeAlphabet;
             for (int i = 0; i < maxUserLayerBoolArray.Length; i++)
@@ -461,7 +475,7 @@ namespace HexaCode
                 {
                     binaryPiece = new[] {false, false, false, false, false, false};
                 }
-                
+
                 //считаем по формуле pieces = 1 * 6 + 2 * 6 + 3 * 6
                 //тогда pieces / 6 = 1 + 2 + 3 + 4 
                 //но pieces / 6 = i
@@ -473,7 +487,7 @@ namespace HexaCode
                 {
                     indexInLayer -= sub * 6;
                 }
-                
+
                 //чётный ли слой
                 //var isEvenLayer = layer % 2 == 0; 
 
@@ -484,7 +498,7 @@ namespace HexaCode
 
                 var vecX = centerX + 1.5f * drawingR * layer; // сдвигаемся в правый верхний угол
                 var vecY = centerY - _sqrt3 / 2 * drawingR * layer;
-                
+
                 //начинаем в цикле сдвигаться по грани гексагона
                 for (var j = 0; j <= indexInLayer; j++)
                 {
@@ -526,7 +540,7 @@ namespace HexaCode
                 ////реальные координаты гексагона
                 var hexagonX = vecX;
                 var hexagonY = vecY;
-                
+
                 //рисуем гексагон
                 DrawHexagon(hexagonX, hexagonY, _r, graphics, binaryPiece);
             }
