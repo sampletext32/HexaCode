@@ -55,8 +55,8 @@ namespace HexaCode
             
             try
             {
-                var b = (Bitmap) Image.FromFile("image.jpg");
-                //var b = _converter.GenerateBitmap(textBox1.Text);
+                //var b = (Bitmap) Image.FromFile("image.jpg");
+                var b = _converter.GenerateBitmap(textBox1.Text);
 
                 this.Text = "Finished Reading Image";
                 Application.DoEvents();

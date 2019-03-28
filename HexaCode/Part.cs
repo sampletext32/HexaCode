@@ -16,6 +16,34 @@ namespace HexaCode
         public int Lifetime { get; private set; }
         public int Count { get; private set; }
 
+        public Country Country
+        {
+            get => LocalDataHolder.Country_GetById(CountryId);
+            set
+            {
+                if (value.Id == 0)
+                {
+                    throw new ArgumentException("Country Id 0: Insert Before Using");
+                }
+
+                CountryId = value.Id;
+            }
+        }
+
+        public Manufacturer Manufacturer
+        {
+            get => LocalDataHolder.Manufacturer_GetById(ManufacturerId);
+            set
+            {
+                if (value.Id == 0)
+                {
+                    throw new ArgumentException("Country Id 0: Insert Before Using");
+                }
+
+                ManufacturerId = value.Id;
+            }
+        }
+
         public void TakeOne()
         {
             if (Count == 0)
@@ -49,7 +77,8 @@ namespace HexaCode
             Count = 0;
         }
 
-        public Part(int id, int countryId, int manufacturerId, string name, string technicalData, int lifetime, int count)
+        public Part(int id, int countryId, int manufacturerId, string name, string technicalData, int lifetime,
+            int count)
         {
             Id = id;
             CountryId = countryId;
@@ -58,6 +87,18 @@ namespace HexaCode
             TechnicalData = technicalData;
             Lifetime = lifetime;
             Count = count;
+        }
+
+        public override string ToString()
+        {
+            return "Part:\n" +
+                   "Id=" + Id + "\n" +
+                   "CountryId=" + CountryId + "\n" +
+                   "ManufacturerId=" + ManufacturerId + "\n" +
+                   "Name=" + Name + "\n" +
+                   "TechnicalData=" + TechnicalData + "\n" +
+                   "Lifetime=" + Lifetime + "\n" +
+                   "Count=" + Count + "\n";
         }
     }
 }

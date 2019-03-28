@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace HexaCode
 
         private static void EstablishConnection()
         {
+            _connection?.Close();
             _connection = new SQLiteConnection(string.Format("Data Source={0}", "data.db"));
             _connection.Open();
         }
@@ -20,7 +22,7 @@ namespace HexaCode
         public static List<Part> SelectAllParts()
         {
             List<Part> parts = new List<Part>();
-            var reader = ExecuteReader("SELECT * FROM countries");
+            var reader = ExecuteReader("SELECT * FROM parts");
             while (reader.Read())
             {
                 int id = Convert.ToInt32(reader["id"].ToString());
@@ -66,6 +68,7 @@ namespace HexaCode
             {
                 throw new InvalidOperationException("Can't call update: Id = 0, Call Insert First");
             }
+
             ExecuteQuery(
                 $"UPDATE parts SET " +
                 $"country_id='{part.CountryId}', " +
@@ -131,6 +134,7 @@ namespace HexaCode
             {
                 throw new InvalidOperationException("Can't call update: Id = 0, Call Insert First");
             }
+
             ExecuteQuery($"UPDATE countries SET name='{country.Name}' WHERE id='{country.Id}'");
         }
 
@@ -180,6 +184,7 @@ namespace HexaCode
             {
                 throw new InvalidOperationException("Can't call update: Id = 0, Call Insert First");
             }
+
             ExecuteQuery($"UPDATE manufacturers SET name='{manufacturer.Name}' WHERE id='{manufacturer.Id}'");
         }
 
@@ -192,16 +197,21 @@ namespace HexaCode
 
         private static SQLiteDataReader ExecuteReader(string command)
         {
+            EstablishConnection();
             var sqliteCommand = new SQLiteCommand(command, _connection);
+
             var reader = sqliteCommand.ExecuteReader();
+
             return reader;
         }
 
         private static int ExecuteQuery(string command)
         {
+            EstablishConnection();
+
             var sqliteCommand = new SQLiteCommand(command, _connection);
             sqliteCommand.ExecuteNonQuery();
-            var insertRowId = (int)_connection.LastInsertRowId;
+            var insertRowId = (int) _connection.LastInsertRowId;
             return insertRowId;
         }
     }
