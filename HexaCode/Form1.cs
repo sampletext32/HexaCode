@@ -40,7 +40,9 @@ namespace HexaCode
             string text = textBox1.Text;
             try
             {
+                var bitmap = _converter.GenerateBitmap(text);
                 SetImage(ColorConverter.AddBorder(_converter.GenerateBitmap(text), 10));
+                //bitmap.Save("generated.jpg");
             }
             catch (IndexOutOfRangeException indexOutOfRangeException)
             {
@@ -50,10 +52,11 @@ namespace HexaCode
 
         private void buttonParse_Click(object sender, EventArgs e)
         {
-            //var b = (Bitmap) Image.FromFile("image.jpg");
+            
             try
             {
-                var b = _converter.GenerateBitmap(textBox1.Text);
+                var b = (Bitmap) Image.FromFile("image.jpg");
+                //var b = _converter.GenerateBitmap(textBox1.Text);
 
                 this.Text = "Finished Reading Image";
                 Application.DoEvents();
