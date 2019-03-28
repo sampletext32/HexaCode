@@ -62,6 +62,10 @@ namespace HexaCode
 
         public static void UpdatePart(Part part)
         {
+            if (part.Id == 0)
+            {
+                throw new InvalidOperationException("Can't call update: Id = 0, Call Insert First");
+            }
             ExecuteQuery(
                 $"UPDATE parts SET " +
                 $"country_id='{part.CountryId}', " +
@@ -75,7 +79,7 @@ namespace HexaCode
 
         public static int InsertPart(Part part)
         {
-            return ExecuteQuery(
+            var id = ExecuteQuery(
                 $"INSERT INTO parts " +
                 $"('country_id','manufacturer_id','name','technical_data','lifetime','count') VALUES (" +
                 $"'{part.CountryId}', " +
@@ -84,6 +88,8 @@ namespace HexaCode
                 $"'{part.TechnicalData}', " +
                 $"'{part.Lifetime}', " +
                 $"'{part.Count}')");
+            part.SetId(id);
+            return id;
         }
 
         public static List<Country> SelectAllCountries()
@@ -121,12 +127,18 @@ namespace HexaCode
 
         public static void UpdateCountry(Country country)
         {
+            if (country.Id == 0)
+            {
+                throw new InvalidOperationException("Can't call update: Id = 0, Call Insert First");
+            }
             ExecuteQuery($"UPDATE countries SET name='{country.Name}' WHERE id='{country.Id}'");
         }
 
         public static int InsertCountry(Country country)
         {
-            return ExecuteQuery($"INSERT INTO countries ('name') VALUES ('{country.Name}')");
+            var id = ExecuteQuery($"INSERT INTO countries ('name') VALUES ('{country.Name}')");
+            country.SetId(id);
+            return id;
         }
 
         public static List<Manufacturer> SelectAllManufacturers()
@@ -164,12 +176,18 @@ namespace HexaCode
 
         public static void UpdateManufacturer(Manufacturer manufacturer)
         {
+            if (manufacturer.Id == 0)
+            {
+                throw new InvalidOperationException("Can't call update: Id = 0, Call Insert First");
+            }
             ExecuteQuery($"UPDATE manufacturers SET name='{manufacturer.Name}' WHERE id='{manufacturer.Id}'");
         }
 
         public static int InsertManufacturer(Manufacturer manufacturer)
         {
-            return ExecuteQuery($"INSERT INTO manufacturers ('name') VALUES ('{manufacturer.Name}')");
+            var id = ExecuteQuery($"INSERT INTO manufacturers ('name') VALUES ('{manufacturer.Name}')");
+            manufacturer.SetId(id);
+            return id;
         }
 
         private static SQLiteDataReader ExecuteReader(string command)

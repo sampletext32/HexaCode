@@ -8,13 +8,35 @@ namespace HexaCode
 {
     public class Part
     {
-        public int Id { get; }
-        public int CountryId { get; }
-        public int ManufacturerId { get; }
-        public string Name { get; }
-        public string TechnicalData { get; }
-        public int Lifetime { get; }
-        public int Count { get; }
+        public int Id { get; private set; }
+        public int CountryId { get; private set; }
+        public int ManufacturerId { get; private set; }
+        public string Name { get; private set; }
+        public string TechnicalData { get; private set; }
+        public int Lifetime { get; private set; }
+        public int Count { get; private set; }
+
+        public void TakeOne()
+        {
+            if (Count == 0)
+            {
+                throw new InvalidOperationException("Count = 0, No Parts Left");
+            }
+
+            Count--;
+            Database.UpdatePart(this);
+        }
+
+        public void PushOne()
+        {
+            Count++;
+            Database.UpdatePart(this);
+        }
+
+        public void SetId(int id)
+        {
+            Id = id;
+        }
 
         public Part()
         {
