@@ -30,6 +30,9 @@
         {
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageParts = new System.Windows.Forms.TabPage();
+            this.buttonConvertPartFromCode = new System.Windows.Forms.Button();
+            this.buttonConvertPartToCode = new System.Windows.Forms.Button();
+            this.buttonCancelEditingPart = new System.Windows.Forms.Button();
             this.textBoxPartCount = new System.Windows.Forms.TextBox();
             this.textBoxPartLifetime = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -48,6 +51,7 @@
             this.buttonInsertPart = new System.Windows.Forms.Button();
             this.buttonUpdatePart = new System.Windows.Forms.Button();
             this.tabPageCountries = new System.Windows.Forms.TabPage();
+            this.buttonCancelEditingCountry = new System.Windows.Forms.Button();
             this.textBoxCountryName = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -56,6 +60,7 @@
             this.buttonUpdateCountry = new System.Windows.Forms.Button();
             this.listBoxCountries = new System.Windows.Forms.ListBox();
             this.tabPageManufacturers = new System.Windows.Forms.TabPage();
+            this.buttonCancelEditingManufacturer = new System.Windows.Forms.Button();
             this.textBoxManufacturerName = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -63,11 +68,6 @@
             this.buttonInsertManufacturer = new System.Windows.Forms.Button();
             this.buttonUpdateManufacturer = new System.Windows.Forms.Button();
             this.listBoxManufacturers = new System.Windows.Forms.ListBox();
-            this.buttonCancelEditingPart = new System.Windows.Forms.Button();
-            this.buttonCancelEditingCountry = new System.Windows.Forms.Button();
-            this.buttonCancelEditingManufacturer = new System.Windows.Forms.Button();
-            this.buttonConvertPartToCode = new System.Windows.Forms.Button();
-            this.buttonConvertPartFromCode = new System.Windows.Forms.Button();
             this.tabControlMain.SuspendLayout();
             this.tabPageParts.SuspendLayout();
             this.tabPageCountries.SuspendLayout();
@@ -116,6 +116,37 @@
             this.tabPageParts.Size = new System.Drawing.Size(704, 603);
             this.tabPageParts.TabIndex = 0;
             this.tabPageParts.Text = "Parts";
+            // 
+            // buttonConvertPartFromCode
+            // 
+            this.buttonConvertPartFromCode.Location = new System.Drawing.Point(352, 552);
+            this.buttonConvertPartFromCode.Name = "buttonConvertPartFromCode";
+            this.buttonConvertPartFromCode.Size = new System.Drawing.Size(344, 40);
+            this.buttonConvertPartFromCode.TabIndex = 20;
+            this.buttonConvertPartFromCode.Text = "Convert From Code";
+            this.buttonConvertPartFromCode.UseVisualStyleBackColor = true;
+            this.buttonConvertPartFromCode.Click += new System.EventHandler(this.buttonConvertPartFromCode_Click);
+            // 
+            // buttonConvertPartToCode
+            // 
+            this.buttonConvertPartToCode.Location = new System.Drawing.Point(352, 504);
+            this.buttonConvertPartToCode.Name = "buttonConvertPartToCode";
+            this.buttonConvertPartToCode.Size = new System.Drawing.Size(344, 40);
+            this.buttonConvertPartToCode.TabIndex = 19;
+            this.buttonConvertPartToCode.Text = "Convert To Code";
+            this.buttonConvertPartToCode.UseVisualStyleBackColor = true;
+            this.buttonConvertPartToCode.Click += new System.EventHandler(this.buttonConvertPartToCode_Click);
+            // 
+            // buttonCancelEditingPart
+            // 
+            this.buttonCancelEditingPart.Enabled = false;
+            this.buttonCancelEditingPart.Location = new System.Drawing.Point(584, 456);
+            this.buttonCancelEditingPart.Name = "buttonCancelEditingPart";
+            this.buttonCancelEditingPart.Size = new System.Drawing.Size(115, 40);
+            this.buttonCancelEditingPart.TabIndex = 18;
+            this.buttonCancelEditingPart.Text = "Cancel";
+            this.buttonCancelEditingPart.UseVisualStyleBackColor = true;
+            this.buttonCancelEditingPart.Click += new System.EventHandler(this.buttonCancelEditingPart_Click);
             // 
             // textBoxPartCount
             // 
@@ -283,6 +314,17 @@
             this.tabPageCountries.TabIndex = 1;
             this.tabPageCountries.Text = "Countries";
             // 
+            // buttonCancelEditingCountry
+            // 
+            this.buttonCancelEditingCountry.Enabled = false;
+            this.buttonCancelEditingCountry.Location = new System.Drawing.Point(592, 120);
+            this.buttonCancelEditingCountry.Name = "buttonCancelEditingCountry";
+            this.buttonCancelEditingCountry.Size = new System.Drawing.Size(107, 40);
+            this.buttonCancelEditingCountry.TabIndex = 19;
+            this.buttonCancelEditingCountry.Text = "Cancel";
+            this.buttonCancelEditingCountry.UseVisualStyleBackColor = true;
+            this.buttonCancelEditingCountry.Click += new System.EventHandler(this.buttonCancelEditingCountry_Click);
+            // 
             // textBoxCountryName
             // 
             this.textBoxCountryName.Location = new System.Drawing.Point(352, 88);
@@ -363,6 +405,17 @@
             this.tabPageManufacturers.TabIndex = 2;
             this.tabPageManufacturers.Text = "Manufacturers";
             // 
+            // buttonCancelEditingManufacturer
+            // 
+            this.buttonCancelEditingManufacturer.Enabled = false;
+            this.buttonCancelEditingManufacturer.Location = new System.Drawing.Point(592, 120);
+            this.buttonCancelEditingManufacturer.Name = "buttonCancelEditingManufacturer";
+            this.buttonCancelEditingManufacturer.Size = new System.Drawing.Size(107, 40);
+            this.buttonCancelEditingManufacturer.TabIndex = 19;
+            this.buttonCancelEditingManufacturer.Text = "Cancel";
+            this.buttonCancelEditingManufacturer.UseVisualStyleBackColor = true;
+            this.buttonCancelEditingManufacturer.Click += new System.EventHandler(this.buttonCancelEditingManufacturer_Click);
+            // 
             // textBoxManufacturerName
             // 
             this.textBoxManufacturerName.Location = new System.Drawing.Point(352, 88);
@@ -424,59 +477,6 @@
             this.listBoxManufacturers.Size = new System.Drawing.Size(224, 548);
             this.listBoxManufacturers.TabIndex = 8;
             this.listBoxManufacturers.SelectedIndexChanged += new System.EventHandler(this.listBoxManufacturers_SelectedIndexChanged);
-            // 
-            // buttonCancelEditingPart
-            // 
-            this.buttonCancelEditingPart.Enabled = false;
-            this.buttonCancelEditingPart.Location = new System.Drawing.Point(584, 456);
-            this.buttonCancelEditingPart.Name = "buttonCancelEditingPart";
-            this.buttonCancelEditingPart.Size = new System.Drawing.Size(115, 40);
-            this.buttonCancelEditingPart.TabIndex = 18;
-            this.buttonCancelEditingPart.Text = "Cancel";
-            this.buttonCancelEditingPart.UseVisualStyleBackColor = true;
-            this.buttonCancelEditingPart.Click += new System.EventHandler(this.buttonCancelEditingPart_Click);
-            // 
-            // buttonCancelEditingCountry
-            // 
-            this.buttonCancelEditingCountry.Enabled = false;
-            this.buttonCancelEditingCountry.Location = new System.Drawing.Point(592, 120);
-            this.buttonCancelEditingCountry.Name = "buttonCancelEditingCountry";
-            this.buttonCancelEditingCountry.Size = new System.Drawing.Size(107, 40);
-            this.buttonCancelEditingCountry.TabIndex = 19;
-            this.buttonCancelEditingCountry.Text = "Cancel";
-            this.buttonCancelEditingCountry.UseVisualStyleBackColor = true;
-            this.buttonCancelEditingCountry.Click += new System.EventHandler(this.buttonCancelEditingCountry_Click);
-            // 
-            // buttonCancelEditingManufacturer
-            // 
-            this.buttonCancelEditingManufacturer.Enabled = false;
-            this.buttonCancelEditingManufacturer.Location = new System.Drawing.Point(592, 120);
-            this.buttonCancelEditingManufacturer.Name = "buttonCancelEditingManufacturer";
-            this.buttonCancelEditingManufacturer.Size = new System.Drawing.Size(107, 40);
-            this.buttonCancelEditingManufacturer.TabIndex = 19;
-            this.buttonCancelEditingManufacturer.Text = "Cancel";
-            this.buttonCancelEditingManufacturer.UseVisualStyleBackColor = true;
-            this.buttonCancelEditingManufacturer.Click += new System.EventHandler(this.buttonCancelEditingManufacturer_Click);
-            // 
-            // buttonConvertPartToCode
-            // 
-            this.buttonConvertPartToCode.Location = new System.Drawing.Point(352, 504);
-            this.buttonConvertPartToCode.Name = "buttonConvertPartToCode";
-            this.buttonConvertPartToCode.Size = new System.Drawing.Size(344, 40);
-            this.buttonConvertPartToCode.TabIndex = 19;
-            this.buttonConvertPartToCode.Text = "Convert To Code";
-            this.buttonConvertPartToCode.UseVisualStyleBackColor = true;
-            this.buttonConvertPartToCode.Click += new System.EventHandler(this.buttonConvertPartToCode_Click);
-            // 
-            // buttonConvertPartFromCode
-            // 
-            this.buttonConvertPartFromCode.Location = new System.Drawing.Point(352, 552);
-            this.buttonConvertPartFromCode.Name = "buttonConvertPartFromCode";
-            this.buttonConvertPartFromCode.Size = new System.Drawing.Size(344, 40);
-            this.buttonConvertPartFromCode.TabIndex = 20;
-            this.buttonConvertPartFromCode.Text = "Convert From Code";
-            this.buttonConvertPartFromCode.UseVisualStyleBackColor = true;
-            this.buttonConvertPartFromCode.Click += new System.EventHandler(this.buttonConvertPartFromCode_Click);
             // 
             // FormAdmin
             // 

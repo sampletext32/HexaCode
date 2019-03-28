@@ -31,6 +31,14 @@ namespace HexaCode
             InitializeComponent();
             _returnableWrapper = returnableWrapper;
             _sendableWrapper = sendableWrapper;
+
+            var dpiGraphics = Graphics.FromHwnd(IntPtr.Zero);
+
+            AutoScaleDimensions = new SizeF(dpiGraphics.DpiX, dpiGraphics.DpiX);
+
+            AutoScaleMode = AutoScaleMode.Dpi;
+
+            dpiGraphics.Dispose();
         }
 
         private void buttonOpenFile_Click(object sender, EventArgs e)
@@ -84,41 +92,58 @@ namespace HexaCode
         {
             richTextBoxLog.Clear();
 
+            if (_loadedBitmap == null)
+            {
+                richTextBoxLog.AppendText("Image Is Not Loaded\n");
+                Application.DoEvents();
+                return;
+            }
+
             richTextBoxLog.AppendText("Clonning Original Bitmap\n");
+            Application.DoEvents();
+
             var b = ColorConverter.CloneBitmap(_loadedBitmap);
 
             var splitCoefficient = (float) numericUpDownSplitColorCoefficient.Value / 1000f;
 
             richTextBoxLog.AppendText("Splitting Color\n");
+            Application.DoEvents();
             b = ColorConverter.SplitColors(b, splitCoefficient);
             if (_finishAtSplitColor) goto FINISH;
 
             richTextBoxLog.AppendText("Trimming To Black\n");
+            Application.DoEvents();
             b = ColorConverter.TrimToBlack(b);
             if (_finishAtTrimBlack) goto FINISH;
 
             richTextBoxLog.AppendText("Adding Border\n");
+            Application.DoEvents();
             b = ColorConverter.AddBorder(b, (int) numericUpDownBorderSize.Value);
             if (_finishAtAddBorder) goto FINISH;
 
             richTextBoxLog.AppendText("Getting Hexagon Radius\n");
+            Application.DoEvents();
             var radius = HexagonConverter.GetHexagonRadiusFromImage(b, 0f);
             richTextBoxLog.AppendText("Hexagon Radius = " + radius + "\n");
+            Application.DoEvents();
             if (_finishAtGetHexagonRadius) goto FINISH;
 
             try
             {
                 var content = new HexagonConverter(radius, 0f).ParseCorrectBitmap(b);
                 richTextBoxLog.AppendText("Parsed Successfully:\n" + content + "\n");
+                Application.DoEvents();
             }
             catch (Exception e)
             {
                 richTextBoxLog.AppendText("Error: " + e.Message + "\n");
+                Application.DoEvents();
             }
 
 
             FINISH:
             richTextBoxLog.AppendText("Finished\n");
+            Application.DoEvents();
             SetImage(b);
         }
 

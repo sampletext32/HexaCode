@@ -26,6 +26,14 @@ namespace HexaCode
             _returnableWrapper = returnableWrapper;
             _sendableWrapper = sendableWrapper;
 
+            var dpiGraphics = Graphics.FromHwnd(IntPtr.Zero);
+
+            AutoScaleDimensions = new SizeF(dpiGraphics.DpiX, dpiGraphics.DpiX);
+
+            AutoScaleMode = AutoScaleMode.Dpi;
+
+            dpiGraphics.Dispose();
+
             _displayingContent = (string)sendableWrapper.O;
         }
 
@@ -89,6 +97,15 @@ namespace HexaCode
                 {
                     MessageBox.Show("Save Error");
                 }
+            }
+        }
+
+        private void buttonGenerateFromText_Click(object sender, EventArgs e)
+        {
+            if (textBoxInput.TextLength > 0)
+            {
+                _displayingContent = textBoxInput.Text;
+                RegenerateImage();
             }
         }
     }

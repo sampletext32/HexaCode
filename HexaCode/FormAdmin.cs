@@ -19,6 +19,13 @@ namespace HexaCode
         public FormAdmin()
         {
             InitializeComponent();
+            var dpiGraphics = Graphics.FromHwnd(IntPtr.Zero);
+
+            AutoScaleDimensions = new SizeF(dpiGraphics.DpiX, dpiGraphics.DpiX);
+
+            AutoScaleMode = AutoScaleMode.Dpi;
+
+            dpiGraphics.Dispose();
         }
 
         private int _selectedPartIndex = -1;
@@ -447,11 +454,11 @@ namespace HexaCode
             }
 
             var part = LocalDataHolder.Part_Get(_selectedPartIndex);
-            var jsonString =
-                JsonConvert.SerializeObject(part);
+            var sendingData = part.Id.ToString();
+            //JsonConvert.SerializeObject(part);
 
             ObjectWrapper returnable = new ObjectWrapper();
-            ObjectWrapper sendable = new ObjectWrapper(jsonString);
+            ObjectWrapper sendable = new ObjectWrapper(sendingData);
 
             var hexagonShowForm = new HexagonShowForm(returnable, sendable);
             var thr = new Thread(() => { Application.Run(hexagonShowForm); });
@@ -462,6 +469,7 @@ namespace HexaCode
             {
                 Thread.Sleep(10);
             }
+
             this.Visible = true;
         }
 
@@ -479,6 +487,7 @@ namespace HexaCode
             {
                 Thread.Sleep(10);
             }
+
             this.Visible = true;
         }
     }
