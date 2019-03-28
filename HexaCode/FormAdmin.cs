@@ -26,6 +26,8 @@ namespace HexaCode
             AutoScaleMode = AutoScaleMode.Dpi;
 
             dpiGraphics.Dispose();
+
+            //MessageBox.Show(((HexagonConverter.GetLayerSumHexagonsCount(31) - 1) * 6).ToString());
         }
 
         private int _selectedPartIndex = -1;
@@ -127,6 +129,27 @@ namespace HexaCode
             textBoxManufacturerName.Text = string.Empty;
         }
 
+        void FillPart(Part part)
+        {
+            textBoxPartId.Text = part.Id.ToString();
+
+            var countries = LocalDataHolder.Country_SelectAll();
+            var countryIndex = countries.FindIndex(t => t.Id == part.CountryId);
+            comboBoxPartCountry.SelectedIndex = countryIndex;
+
+            var manufacturers = LocalDataHolder.Manufacturers_SelectAll();
+            var manufacturerIndex = manufacturers.FindIndex(t => t.Id == part.ManufacturerId);
+            comboBoxPartManufacturer.SelectedIndex = manufacturerIndex;
+
+            textBoxPartName.Text = part.Name;
+
+            richTextBoxPartTechnicalData.Text = JToken.Parse(part.TechnicalData).ToString(Formatting.Indented);
+
+            textBoxPartLifetime.Text = part.Lifetime.ToString();
+
+            textBoxPartCount.Text = part.Count.ToString();
+        }
+
         private void buttonUpdatePart_Click(object sender, EventArgs e)
         {
             if (!_editingPart)
@@ -140,24 +163,7 @@ namespace HexaCode
                 try
                 {
                     var part = LocalDataHolder.Part_Get(_selectedPartIndex);
-
-                    textBoxPartId.Text = part.Id.ToString();
-
-                    var countries = LocalDataHolder.Country_SelectAll();
-                    var countryIndex = countries.FindIndex(t => t.Id == part.CountryId);
-                    comboBoxPartCountry.SelectedIndex = countryIndex;
-
-                    var manufacturers = LocalDataHolder.Manufacturers_SelectAll();
-                    var manufacturerIndex = manufacturers.FindIndex(t => t.Id == part.ManufacturerId);
-                    comboBoxPartManufacturer.SelectedIndex = manufacturerIndex;
-
-                    textBoxPartName.Text = part.Name;
-
-                    richTextBoxPartTechnicalData.Text = JToken.Parse(part.TechnicalData).ToString(Formatting.Indented);
-
-                    textBoxPartLifetime.Text = part.Lifetime.ToString();
-
-                    textBoxPartCount.Text = part.Count.ToString();
+                    FillPart(part);
                 }
                 catch (IndexOutOfRangeException)
                 {
@@ -168,6 +174,8 @@ namespace HexaCode
                 buttonInsertPart.Enabled = false;
                 buttonCancelEditingPart.Enabled = true;
                 _editingPart = true;
+                buttonPutPart.Enabled = true;
+                buttonTakePart.Enabled = true;
             }
             else
             {
@@ -208,6 +216,9 @@ namespace HexaCode
                 buttonInsertPart.Enabled = true;
                 buttonCancelEditingPart.Enabled = false;
                 _editingPart = false;
+
+                buttonPutPart.Enabled = false;
+                buttonTakePart.Enabled = false;
             }
         }
 
@@ -279,6 +290,9 @@ namespace HexaCode
                 buttonCancelEditingPart.Enabled = false;
 
                 _editingPart = false;
+
+                buttonPutPart.Enabled = false;
+                buttonTakePart.Enabled = false;
             }
         }
 
@@ -447,15 +461,16 @@ namespace HexaCode
 
         private void buttonConvertPartToCode_Click(object sender, EventArgs e)
         {
-            if (_selectedPartIndex == -1)
+            var sendingData = (string)null;
+            if (_selectedPartIndex != -1)
             {
-                MessageBox.Show("Select Part");
-                return;
+                var part = LocalDataHolder.Part_Get(_selectedPartIndex);
+                sendingData = part.Id.ToString();
+                sendingData = JsonConvert.SerializeObject(part);
             }
 
-            var part = LocalDataHolder.Part_Get(_selectedPartIndex);
-            var sendingData = part.Id.ToString();
-            //JsonConvert.SerializeObject(part);
+
+            
 
             ObjectWrapper returnable = new ObjectWrapper();
             ObjectWrapper sendable = new ObjectWrapper(sendingData);
@@ -489,6 +504,40 @@ namespace HexaCode
             }
 
             this.Visible = true;
+
+            var parsedContent = (string) returnable.O;
+            if (parsedContent != null)
+            {
+                var parsedId = int.Parse(parsedContent);
+                var itemIndex = LocalDataHolder.Part_SelectAll().FindIndex(t => t.Id == parsedId);
+                if (itemIndex != -1)
+                {
+                    listBoxParts.SelectedIndex = itemIndex;
+                }
+            }
+        }
+
+        private void buttonPutOne_Click(object sender, EventArgs e)
+        {
+            var part = LocalDataHolder.Part_Get(_selectedPartIndex);
+            part.PushOne();
+            FillPart(part);
+        }
+
+        private void buttonTakePart_Click(object sender, EventArgs e)
+        {
+            var part = LocalDataHolder.Part_Get(_selectedPartIndex);
+            try
+            {
+                part.TakeOne();
+                MessageBox.Show("Successfully Taken One");
+            }
+            catch (Exception )
+            {
+                MessageBox.Show("Unable to Take One");
+            }
+
+            FillPart(part);
         }
     }
 }

@@ -357,14 +357,14 @@ namespace HexaCode
                     if (IsPixelBlack(value)) //black
                     {
                         binaryStringBuilder.Append('1');
-                        g.DrawString("1", font, Brushes.Red, pixels[i].X - size1.Width / 2,
-                            pixels[i].Y - size1.Height / 2);
+                        //g.DrawString("1", font, Brushes.Red, pixels[i].X - size1.Width / 2,
+                        //    pixels[i].Y - size1.Height / 2);
                     }
                     else
                     {
                         binaryStringBuilder.Append('0');
-                        g.DrawString("0", font, Brushes.Red, pixels[i].X - size0.Width / 2,
-                            pixels[i].Y - size0.Height / 2);
+                        //g.DrawString("0", font, Brushes.Red, pixels[i].X - size0.Width / 2,
+                        //    pixels[i].Y - size0.Height / 2);
                     }
                 }
             }
@@ -373,7 +373,7 @@ namespace HexaCode
             return FromBinaryString(binaryString, useLargeAlphabet);
         }
 
-        private int GetLayerSumHexagonsCount(int layer)
+        public static int GetLayerSumHexagonsCount(int layer)
         {
             int sum = 0;
             for (int i = 1; i <= layer; i++)

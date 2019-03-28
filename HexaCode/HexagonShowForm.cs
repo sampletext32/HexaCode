@@ -39,9 +39,16 @@ namespace HexaCode
 
         private void RegenerateImage()
         {
-            _converter = new HexagonConverter((float) numericUpDownRadius.Value);
-            var bitmap = _converter.GenerateBitmap(_displayingContent);
-            SetImage(ColorConverter.AddBorder(bitmap, 10));
+            if (_displayingContent != null)
+            {
+                _converter = new HexagonConverter((float) numericUpDownRadius.Value);
+                var bitmap = _converter.GenerateBitmap(_displayingContent);
+                SetImage(ColorConverter.AddBorder(bitmap, 10));
+            }
+            else
+            {
+                MessageBox.Show("Content Null");
+            }
         }
 
         private void HexagonShowForm_Load(object sender, EventArgs e)

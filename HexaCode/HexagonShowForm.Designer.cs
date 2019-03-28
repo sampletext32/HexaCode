@@ -67,7 +67,7 @@
             0,
             0});
             this.numericUpDownRadius.Minimum = new decimal(new int[] {
-            15,
+            20,
             0,
             0,
             0});
@@ -76,7 +76,7 @@
             this.numericUpDownRadius.TabIndex = 2;
             this.numericUpDownRadius.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numericUpDownRadius.Value = new decimal(new int[] {
-            15,
+            20,
             0,
             0,
             0});

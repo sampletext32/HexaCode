@@ -30,6 +30,8 @@
         {
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageParts = new System.Windows.Forms.TabPage();
+            this.buttonTakePart = new System.Windows.Forms.Button();
+            this.buttonPutPart = new System.Windows.Forms.Button();
             this.buttonConvertPartFromCode = new System.Windows.Forms.Button();
             this.buttonConvertPartToCode = new System.Windows.Forms.Button();
             this.buttonCancelEditingPart = new System.Windows.Forms.Button();
@@ -90,6 +92,8 @@
             // tabPageParts
             // 
             this.tabPageParts.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.tabPageParts.Controls.Add(this.buttonTakePart);
+            this.tabPageParts.Controls.Add(this.buttonPutPart);
             this.tabPageParts.Controls.Add(this.buttonConvertPartFromCode);
             this.tabPageParts.Controls.Add(this.buttonConvertPartToCode);
             this.tabPageParts.Controls.Add(this.buttonCancelEditingPart);
@@ -117,11 +121,33 @@
             this.tabPageParts.TabIndex = 0;
             this.tabPageParts.Text = "Parts";
             // 
+            // buttonTakePart
+            // 
+            this.buttonTakePart.Enabled = false;
+            this.buttonTakePart.Location = new System.Drawing.Point(352, 552);
+            this.buttonTakePart.Name = "buttonTakePart";
+            this.buttonTakePart.Size = new System.Drawing.Size(152, 40);
+            this.buttonTakePart.TabIndex = 22;
+            this.buttonTakePart.Text = "Take 1";
+            this.buttonTakePart.UseVisualStyleBackColor = true;
+            this.buttonTakePart.Click += new System.EventHandler(this.buttonTakePart_Click);
+            // 
+            // buttonPutPart
+            // 
+            this.buttonPutPart.Enabled = false;
+            this.buttonPutPart.Location = new System.Drawing.Point(352, 504);
+            this.buttonPutPart.Name = "buttonPutPart";
+            this.buttonPutPart.Size = new System.Drawing.Size(152, 40);
+            this.buttonPutPart.TabIndex = 21;
+            this.buttonPutPart.Text = "Put 1";
+            this.buttonPutPart.UseVisualStyleBackColor = true;
+            this.buttonPutPart.Click += new System.EventHandler(this.buttonPutOne_Click);
+            // 
             // buttonConvertPartFromCode
             // 
-            this.buttonConvertPartFromCode.Location = new System.Drawing.Point(352, 552);
+            this.buttonConvertPartFromCode.Location = new System.Drawing.Point(512, 552);
             this.buttonConvertPartFromCode.Name = "buttonConvertPartFromCode";
-            this.buttonConvertPartFromCode.Size = new System.Drawing.Size(344, 40);
+            this.buttonConvertPartFromCode.Size = new System.Drawing.Size(184, 40);
             this.buttonConvertPartFromCode.TabIndex = 20;
             this.buttonConvertPartFromCode.Text = "Convert From Code";
             this.buttonConvertPartFromCode.UseVisualStyleBackColor = true;
@@ -129,9 +155,9 @@
             // 
             // buttonConvertPartToCode
             // 
-            this.buttonConvertPartToCode.Location = new System.Drawing.Point(352, 504);
+            this.buttonConvertPartToCode.Location = new System.Drawing.Point(512, 504);
             this.buttonConvertPartToCode.Name = "buttonConvertPartToCode";
-            this.buttonConvertPartToCode.Size = new System.Drawing.Size(344, 40);
+            this.buttonConvertPartToCode.Size = new System.Drawing.Size(184, 40);
             this.buttonConvertPartToCode.TabIndex = 19;
             this.buttonConvertPartToCode.Text = "Convert To Code";
             this.buttonConvertPartToCode.UseVisualStyleBackColor = true;
@@ -541,5 +567,7 @@
         private System.Windows.Forms.Button buttonCancelEditingManufacturer;
         private System.Windows.Forms.Button buttonConvertPartFromCode;
         private System.Windows.Forms.Button buttonConvertPartToCode;
+        private System.Windows.Forms.Button buttonTakePart;
+        private System.Windows.Forms.Button buttonPutPart;
     }
 }

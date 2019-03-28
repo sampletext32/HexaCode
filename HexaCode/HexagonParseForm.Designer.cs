@@ -40,6 +40,7 @@
             this.buttonGetHexagonRadius = new System.Windows.Forms.Button();
             this.buttonCompleteParse = new System.Windows.Forms.Button();
             this.buttonSplitColors = new System.Windows.Forms.Button();
+            this.buttonFindPart = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSplitColorCoefficient)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBorderSize)).BeginInit();
@@ -60,14 +61,14 @@
             this.pictureBoxMain.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.pictureBoxMain.Location = new System.Drawing.Point(272, 8);
             this.pictureBoxMain.Name = "pictureBoxMain";
-            this.pictureBoxMain.Size = new System.Drawing.Size(512, 512);
+            this.pictureBoxMain.Size = new System.Drawing.Size(560, 560);
             this.pictureBoxMain.TabIndex = 4;
             this.pictureBoxMain.TabStop = false;
             this.pictureBoxMain.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBoxMain_Paint);
             // 
             // richTextBoxLog
             // 
-            this.richTextBoxLog.Location = new System.Drawing.Point(8, 304);
+            this.richTextBoxLog.Location = new System.Drawing.Point(8, 352);
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.Size = new System.Drawing.Size(256, 216);
             this.richTextBoxLog.TabIndex = 6;
@@ -182,11 +183,22 @@
             this.buttonSplitColors.UseVisualStyleBackColor = true;
             this.buttonSplitColors.Click += new System.EventHandler(this.buttonSplitColors_Click);
             // 
+            // buttonFindPart
+            // 
+            this.buttonFindPart.Location = new System.Drawing.Point(8, 304);
+            this.buttonFindPart.Name = "buttonFindPart";
+            this.buttonFindPart.Size = new System.Drawing.Size(256, 40);
+            this.buttonFindPart.TabIndex = 16;
+            this.buttonFindPart.Text = "Find Part";
+            this.buttonFindPart.UseVisualStyleBackColor = true;
+            this.buttonFindPart.Click += new System.EventHandler(this.buttonFindPart_Click);
+            // 
             // HexagonParseForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(793, 529);
+            this.ClientSize = new System.Drawing.Size(841, 577);
+            this.Controls.Add(this.buttonFindPart);
             this.Controls.Add(this.buttonCompleteParse);
             this.Controls.Add(this.buttonGetHexagonRadius);
             this.Controls.Add(this.label2);
@@ -223,5 +235,6 @@
         private System.Windows.Forms.Button buttonGetHexagonRadius;
         private System.Windows.Forms.Button buttonCompleteParse;
         private System.Windows.Forms.Button buttonSplitColors;
+        private System.Windows.Forms.Button buttonFindPart;
     }
 }

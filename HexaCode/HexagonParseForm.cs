@@ -26,6 +26,8 @@ namespace HexaCode
         private bool _finishAtAddBorder = false;
         private bool _finishAtGetHexagonRadius = false;
 
+        private string _lastParsedContent = string.Empty;
+
         public HexagonParseForm(ObjectWrapper returnableWrapper, ObjectWrapper sendableWrapper)
         {
             InitializeComponent();
@@ -131,6 +133,7 @@ namespace HexaCode
             try
             {
                 var content = new HexagonConverter(radius, 0f).ParseCorrectBitmap(b);
+                _lastParsedContent = content;
                 richTextBoxLog.AppendText("Parsed Successfully:\n" + content + "\n");
                 Application.DoEvents();
             }
@@ -190,6 +193,12 @@ namespace HexaCode
             _finishAtAddBorder = false;
             _finishAtGetHexagonRadius = false;
             ProcessImage();
+        }
+
+        private void buttonFindPart_Click(object sender, EventArgs e)
+        {
+            _returnableWrapper.O = _lastParsedContent;
+            this.Close();
         }
     }
 }
