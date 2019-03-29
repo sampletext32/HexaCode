@@ -1,3 +1,2 @@
-.vs/*
-HexaCode/bin/Debug
-HexaCode/bin/Debug/*
+.vs/
+HexaCode/bin/Debug/
