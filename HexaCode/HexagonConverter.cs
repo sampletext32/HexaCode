@@ -176,6 +176,7 @@ namespace HexaCode
                 binaryString = binaryString.Remove(0, digitsPerPiece);
             }
 
+
             return s;
         }
 
