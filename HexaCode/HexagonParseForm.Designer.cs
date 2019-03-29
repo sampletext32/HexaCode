@@ -147,11 +147,6 @@
             this.numericUpDownBorderSize.Size = new System.Drawing.Size(144, 22);
             this.numericUpDownBorderSize.TabIndex = 12;
             this.numericUpDownBorderSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDownBorderSize.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
             // 
             // buttonGetHexagonRadius
             // 

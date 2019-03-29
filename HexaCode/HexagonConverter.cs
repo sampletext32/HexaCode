@@ -38,8 +38,7 @@ namespace HexaCode
         private static float _sqrt3 = (float) Math.Sqrt(3);
         private static float _sqrt2 = (float) Math.Sqrt(2);
 
-        private const float minRadius = 15f;
-        private const float maxRadius = 50f;
+        private const float minRadius = 10f;
 
         //Константы
         private readonly float _r; //Радиус описанной вокруг гексагона окружности
@@ -49,9 +48,9 @@ namespace HexaCode
 
         public HexagonConverter(float r = 50f, float distanceBetweenHexes = 0f)
         {
-            if (r < minRadius || r > maxRadius)
+            if (r < minRadius)
             {
-                throw new IndexOutOfRangeException("Radius Incorrect");
+                throw new IndexOutOfRangeException("Radius Is Too Small");
             }
 
             _r = r;
@@ -68,12 +67,12 @@ namespace HexaCode
             return Convert.ToString(value, 2).PadLeft(strLength, '0');
         }
 
-        private float GetWidth(int layer, float radius, float distanceBetweenHexes)
+        private static float GetWidth(int layer, float radius, float distanceBetweenHexes)
         {
-            return (float) Math.Ceiling(2 * (1.5f * GetDrawingR(radius, distanceBetweenHexes) * layer + radius));
+            return (float) Math.Ceiling(2 * GetDrawingR(radius, distanceBetweenHexes) * (1.5f * layer + 1));
         }
 
-        private int GetLayerFromWidth(int width, float radius, float distanceBetweenHexes)
+        private static int GetLayerFromWidth(int width, float radius, float distanceBetweenHexes)
         {
             int layer = 0;
             while (GetWidth(layer, radius, distanceBetweenHexes) < width)
@@ -210,7 +209,7 @@ namespace HexaCode
             var centerHexagonCenter = new PointF(centerX, centerY);
             var centerBinaryStringBuilder = new StringBuilder();
 
-            var drawingR = GetDrawingR(width / 32f, 0f);
+            var drawingR = GetDrawingR(minRadius, 0f);
             var centerHexagonPixels = GetPixelsFromCenter(centerHexagonCenter, drawingR);
             for (int i = centerHexagonPixels.Count - 1; i >= 0; i--)
             {
@@ -236,11 +235,15 @@ namespace HexaCode
 
 
             //во всю ширину картинки попадает (3 * R * layer + 2 * R) пикселей
-            //dx = 1.5f * drawingR * layer + R
+            //dx = 1.5f * R * layer + R
             //width = 3f * drawingR * layer + 2 * R
-            var radius = (int) ((width) / (3f * imageActiveLayer + 2));
 
-            return radius;
+            //var layerWidth = GetWidth(imageActiveLayer, 20f, 0f);
+            //var trueRadius = ((layerWidth) / (3f * imageActiveLayer + 2));
+
+            var imageRadius = ((width) / (3f * imageActiveLayer + 2));
+
+            return imageRadius;
         }
 
         //precision [0..255]
@@ -431,18 +434,18 @@ namespace HexaCode
 
             var binaryPieces = DivideBy6(binaryString);
 
-            var drawingR = GetDrawingR(_r, _distanceBetweenHexes);
-            var maxLayer = GetItemLayer(content.Length - 1);
-            var width = GetWidth(maxLayer, _r, _distanceBetweenHexes);
-            var height = GetHeight(maxLayer);
+            var maxUsedLayer = GetItemLayer(binaryPieces.Count - 1);
 
-            var bitmap = new Bitmap((int) Math.Ceiling(width), (int) Math.Ceiling(height));
+            var drawingR = GetDrawingR(_r, _distanceBetweenHexes);
+            var width = GetWidth(maxUsedLayer, _r, _distanceBetweenHexes) + 1;
+            var height = GetHeight(maxUsedLayer) + 1;
+
+            var bitmap = new Bitmap((int) width, (int) height);
 
             var graphics = Graphics.FromImage(bitmap);
 
             graphics.FillRectangle(Brushes.White, 0, 0, width, height);
 
-            var maxUsedLayer = GetItemLayer(binaryPieces.Count - 1);
 
             var maxUsedLayerBinaryString = Convert.ToString(maxUsedLayer, 2);
             maxUsedLayerBinaryString = maxUsedLayerBinaryString.PadLeft(5, '0');
@@ -464,7 +467,7 @@ namespace HexaCode
 
             DrawHexagon(centerX, centerY, _r, graphics, metaData);
 
-            for (var i = 0; i < GetLayerSumHexagonsCount(maxLayer) - 1; i++)
+            for (var i = 0; i < GetLayerSumHexagonsCount(maxUsedLayer) - 1; i++)
             {
                 bool[] binaryPiece;
                 if (i < binaryPieces.Count)
