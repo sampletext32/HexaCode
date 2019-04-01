@@ -41,7 +41,7 @@ namespace HexaCode
             try
             {
                 var bitmap = _converter.GenerateBitmap(text);
-                SetImage(ColorConverter.AddBorder(bitmap, 10));
+                SetImage(BitmapHelper.AddBorder(bitmap, 10));
                 //bitmap.Save("generated.jpg");
             }
             catch (IndexOutOfRangeException indexOutOfRangeException)
@@ -61,17 +61,17 @@ namespace HexaCode
                 this.Text = "Finished Reading Image";
                 Application.DoEvents();
 
-                b = ColorConverter.SplitColors(b, 0.7f);
+                b = BitmapHelper.SplitColors(b, 0.7f);
 
                 this.Text = "Finished Spliting Colors";
                 Application.DoEvents();
 
-                b = ColorConverter.TrimToBlack(b);
+                b = BitmapHelper.TrimToBlack(b);
 
                 this.Text = "Finished Trimming To Black";
                 Application.DoEvents();
 
-                b = ColorConverter.AddBorder(b, 3);
+                b = BitmapHelper.AddBorder(b, 3);
 
                 this.Text = "Finished Adding Border";
                 Application.DoEvents();

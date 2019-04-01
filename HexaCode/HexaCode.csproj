@@ -63,7 +63,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColorConverter.cs" />
+    <Compile Include="BinaryHelper.cs" />
+    <Compile Include="BitmapHelper.cs" />
     <Compile Include="Country.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Form1.cs">
@@ -91,10 +92,12 @@
     <Compile Include="HexagonShowForm.Designer.cs">
       <DependentUpon>HexagonShowForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="HexMathHelper.cs" />
     <Compile Include="ImageBorderAdder.cs" />
     <Compile Include="LocalDataHolder.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Manufacturer.cs" />
+    <Compile Include="MathHelper.cs" />
     <Compile Include="Part.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

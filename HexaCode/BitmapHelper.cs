@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HexaCode
 {
-    class ColorConverter
+    class BitmapHelper
     {
         public static Bitmap ToGrayScale(Bitmap source)
         {

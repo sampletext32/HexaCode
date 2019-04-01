@@ -27,7 +27,7 @@ namespace HexaCode
 
             dpiGraphics.Dispose();
 
-            //MessageBox.Show(((HexagonConverter.GetLayerSumHexagonsCount(31) - 1) * 6).ToString());
+            MessageBox.Show(((HexMathHelper.GetLayerSumHexagonsCount(63) - 1) * 6).ToString());
         }
 
         private int _selectedPartIndex = -1;

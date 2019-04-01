@@ -43,7 +43,7 @@ namespace HexaCode
             {
                 _converter = new HexagonConverter((float) numericUpDownRadius.Value);
                 var bitmap = _converter.GenerateBitmap(_displayingContent);
-                SetImage(ColorConverter.AddBorder(bitmap, 10));
+                SetImage(BitmapHelper.AddBorder(bitmap, 10));
             }
             else
             {

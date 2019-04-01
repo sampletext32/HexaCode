@@ -8,7 +8,7 @@ namespace HexaCode
 {
     class Logger
     {
-        private static StringBuilder _logger = new StringBuilder();
+        private static readonly StringBuilder _logger = new StringBuilder();
 
         public static void AppendLine(string text)
         {

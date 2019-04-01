@@ -77,8 +77,12 @@ namespace HexaCode
         private void SetImage(Bitmap bitmap)
         {
             _displayingBitmap = bitmap;
+            var dx = _displayingBitmap.Width - pictureBoxMain.Width;
+            var dy = _displayingBitmap.Height - pictureBoxMain.Height;
             pictureBoxMain.Width = _displayingBitmap.Width;
             pictureBoxMain.Height = _displayingBitmap.Height;
+            this.Width += dx;
+            this.Height += dy;
             pictureBoxMain.Refresh();
         }
 
@@ -104,23 +108,23 @@ namespace HexaCode
             richTextBoxLog.AppendText("Clonning Original Bitmap\n");
             Application.DoEvents();
 
-            var b = ColorConverter.CloneBitmap(_loadedBitmap);
+            var b = BitmapHelper.CloneBitmap(_loadedBitmap);
 
             var splitCoefficient = (float) numericUpDownSplitColorCoefficient.Value / 1000f;
 
             richTextBoxLog.AppendText("Splitting Color\n");
             Application.DoEvents();
-            b = ColorConverter.SplitColors(b, splitCoefficient);
+            b = BitmapHelper.SplitColors(b, splitCoefficient);
             if (_finishAtSplitColor) goto FINISH;
 
             richTextBoxLog.AppendText("Trimming To Black\n");
             Application.DoEvents();
-            b = ColorConverter.TrimToBlack(b);
+            b = BitmapHelper.TrimToBlack(b);
             if (_finishAtTrimBlack) goto FINISH;
 
             richTextBoxLog.AppendText("Adding Border\n");
             Application.DoEvents();
-            b = ColorConverter.AddBorder(b, (int) numericUpDownBorderSize.Value);
+            b = BitmapHelper.AddBorder(b, (int) numericUpDownBorderSize.Value);
             if (_finishAtAddBorder) goto FINISH;
 
             richTextBoxLog.AppendText("Getting Hexagon Radius\n");
