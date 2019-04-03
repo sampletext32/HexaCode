@@ -30,5 +30,10 @@ namespace HexaCode
 
             return list;
         }
+
+        public static bool[] ToBoolArray(string s)
+        {
+            return s.Select(t => t == '1').ToArray();
+        }
     }
 }

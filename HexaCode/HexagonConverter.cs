@@ -89,11 +89,6 @@ namespace HexaCode
             return s;
         }
 
-        private static bool[] ToBoolArray(string s)
-        {
-            return s.Select(t => t == '1').ToArray();
-        }
-
         private static string Reverse(string text)
         {
             if (text == null) return null;
@@ -134,7 +129,7 @@ namespace HexaCode
                 }
             }
 
-            var metaData = ToBoolArray(Reverse(centerBinaryStringBuilder.ToString()));
+            var metaData = BinaryHelper.ToBoolArray(Reverse(centerBinaryStringBuilder.ToString()));
             var useLargeAlphabet = metaData[0];
 
             var imageActiveLayer = 0;
@@ -187,7 +182,6 @@ namespace HexaCode
         //precision [0..255]
         public string ParseCorrectBitmap(Bitmap bitmap)
         {
-            var g = Graphics.FromImage(bitmap);
             var drawingR = HexMathHelper.GetDrawingR(_r, _distanceBetweenHexes);
             var width = bitmap.Width;
             var height = bitmap.Height;
@@ -195,7 +189,7 @@ namespace HexaCode
             var centerPoint = new PointF(width / 2f, height / 2f);
             var centerHexagonDataString = ParseHexagon(bitmap, centerPoint, drawingR);
 
-            var metaData = ToBoolArray(Reverse(centerHexagonDataString));
+            var metaData = BinaryHelper.ToBoolArray(Reverse(centerHexagonDataString));
 
             var useLargeAlphabet = metaData[0];
 
@@ -208,10 +202,7 @@ namespace HexaCode
             }
 
             var sumHexagons = HexMathHelper.GetLayerSumHexagonsCount(imageActiveLayer) - 1;
-
-            //var font = new Font("Arial", 16);
-            //var size1 = g.MeasureString("1", font);
-            //var size0 = g.MeasureString("0", font);
+            
             var binaryStringBuilder = new StringBuilder(sumHexagons * 6);
             for (int index = sumHexagons - 1; index >= 0; index--)
             {
@@ -281,7 +272,7 @@ namespace HexaCode
 
             var maxUsedLayerBinaryString = Convert.ToString(maxUsedLayer, 2);
             maxUsedLayerBinaryString = maxUsedLayerBinaryString.PadLeft(5, '0');
-            var maxUserLayerBoolArray = ToBoolArray(maxUsedLayerBinaryString);
+            var maxUserLayerBoolArray = BinaryHelper.ToBoolArray(maxUsedLayerBinaryString);
             
             var centerPoint = new PointF(width / 2f, height / 2f);
 
@@ -302,7 +293,7 @@ namespace HexaCode
                 bool[] binaryPiece;
                 if (i < binaryPieces.Count)
                 {
-                    binaryPiece = ToBoolArray(binaryPieces[i]);
+                    binaryPiece = BinaryHelper.ToBoolArray(binaryPieces[i]);
                 }
                 else
                 {
